@@ -7,7 +7,7 @@ def euclidean_distance(x1, y1, x2, y2):
 
 x1_values = []
 y1_values = []
-
+user = 'kratae'
 print("Enter x-coordinate and y-coordinate of Point 1 (separated by a space). Type 'endd' when done.")
 
 while True:
