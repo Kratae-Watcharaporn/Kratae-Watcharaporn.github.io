@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   
     // Fetch user data from the backend API
     try {
-      const response = await fetch('http://localhost:3000/users');
+      const response = await fetch('https://k0c9lchx-3000.asse.devtunnels.ms/users');
       const userData = await response.json();
   
       // Populate the sidebar with user links
