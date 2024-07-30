@@ -182,7 +182,7 @@ function sendDataToServer(numTouches) {
   console.log('Stroke history from canvas with parameters:', touchDataArrayWithParameters);
   console.log('Number of touches:', numTouches);
   // Replace the URL with the server endpoint where you want to send the data
-  fetch('http://localhost:3000/api/pencil', {
+  fetch('http://192.168.1.1:3000/api/pencil', {
     method: 'POST',
     mode: 'cors',
     headers: {
