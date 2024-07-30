@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     console.log(`Fetching scatter data for user: ${user}, page: ${page}`);
 
-    const response = await fetch(`http://192.168.1.1:3000/scatterdata?user=${user}&page=${page}`);
+    const response = await fetch(`http://192.168.1.166:3000/scatterdata?user=${user}&page=${page}`);
     const scatterData = await response.json();
 
     console.log('scatter:', scatterData);
