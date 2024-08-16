@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const app = express();
 const port = 3000;
 
-mongoose.connect('mongodb+srv://Watcharaporn:Only24042538@coding.6t7m44z.mongodb.net/',
+mongoose.connect('mongodb+srv://vaneevan2001:tUIXBL2htACBSSV7@Coding.cssu0dx.mongodb.net/DrawPencil?retryWrites=true&w=majority',
 {
   useNewUrlParser: true,
   useUnifiedTopology: true

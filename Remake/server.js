@@ -5,7 +5,7 @@ const app = express();
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 mongoose.connect(
-  'mongodb+srv://Watcharaporn:Only24042538@coding.6t7m44z.mongodb.net/DrawPencil?retryWrites=true&w=majority&appName=Coding',
+  'mongodb+srv://Watcharaporn:Only24042538@coding.6t7m44z.mongodb.net/?retryWrites=true&w=majority&appName=Coding',
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
