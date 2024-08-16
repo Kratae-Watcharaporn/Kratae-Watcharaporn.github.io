@@ -5,7 +5,7 @@ const app = express();
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 mongoose.connect(
-  'mongodb+srv://Watcharaporn:Only24042538@coding.6t7m44z.mongodb.net/?retryWrites=true&w=majority&appName=Coding',
+    'mongodb+srv://Watcharaporn:Only24042538@coding.6t7m44z.mongodb.net/DrawPencil?retryWrites=true&w=majority&appName=Coding',
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -52,6 +52,7 @@ app.post('/api/pencil', async (req, res) => {
 
 // Start the server
 const PORT = 3000;
-app.listen(PORT, () => {
+// app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
 });

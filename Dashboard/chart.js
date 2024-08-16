@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     console.log(`Fetching scatter data for user: ${user}, page: ${page}`);
 
 <<<<<<< HEAD
-    const response = await fetch(`http://localhost:3000/scatterdata?user=${user}&page=${page}`);
+    const response = await fetch(`https://k0c9lchx-3000.asse.devtunnels.ms/scatterdata?user=${user}&page=${page}`);
 =======
     const response = await fetch(`http://192.168.1.166:3000/scatterdata?user=${user}&page=${page}`);
 >>>>>>> parent of be42a6c (no message)
