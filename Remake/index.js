@@ -242,7 +242,7 @@ function sendDataToServer(numTouches) {
   console.log('Number of touches:', numTouches, currentPageName,user );
   
   // Replace the URL with the server endpoint where you want to send the data
-  fetch('https://k0c9lchx-3000.asse.devtunnels.ms/api/pencil', {
+  fetch('http://localhost:3000/api/pencil', {
     method: 'POST',
     mode: 'cors',
     headers: {
