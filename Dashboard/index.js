@@ -1,6 +1,10 @@
 async function populateDropdown() {
     try {
+<<<<<<< HEAD
         const response = await fetch('http://localhost:3000/users'); // Adjust the URL
+=======
+        const response = await fetch('http://192.168.1.166:3000/users'); // Adjust the URL
+>>>>>>> parent of be42a6c (no message)
         const users = await response.json();
 
         const selectElement = document.getElementById('selUser');

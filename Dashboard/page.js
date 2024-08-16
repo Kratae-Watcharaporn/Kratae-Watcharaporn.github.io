@@ -4,7 +4,11 @@ const selUserDropdown = document.getElementById('selUser'); // Assuming you also
 // Fetch currentPageNames from the server (replace with your actual fetch code)
 async function fetchCurrentPageNames() {
     try {
+<<<<<<< HEAD
         const response = await fetch('http://localhost:3000/pages'); // Update URL
+=======
+        const response = await fetch('http://192.168.1.166:3000/pages'); // Update URL
+>>>>>>> parent of be42a6c (no message)
         const currentPageNames = await response.json();
         return currentPageNames;
     } catch (error) {
