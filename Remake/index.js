@@ -47,17 +47,17 @@ function drawOnCanvas(points) {
   }
 }
 
-// fabricCanvas.on('mouse:down', function (e) {
-//   console.log('Mouse down event triggered');
-//   isMousedown = true;
-//   points.push({ x: e.e.pageX * 2, y: e.e.pageY * 2, lineWidth });
+fabricCanvas.on('mouse:down', function (e) {
+  console.log('Mouse down event triggered');
+  isMousedown = true;
+  points.push({ x: e.e.pageX * 2, y: e.e.pageY * 2, lineWidth });
 
-  // Update localStorage values
-  // localStorage.setItem('beforeX', localStorage.getItem('currentX'));
-  // localStorage.setItem('beforeY', localStorage.getItem('currentY'));
-  // localStorage.setItem('currentX', e.e.pageX * 2);
-  // localStorage.setItem('currentY', e.e.pageY * 2);
-// });
+  Update localStorage values
+  localStorage.setItem('beforeX', localStorage.getItem('currentX'));
+  localStorage.setItem('beforeY', localStorage.getItem('currentY'));
+  localStorage.setItem('currentX', e.e.pageX * 2);
+  localStorage.setItem('currentY', e.e.pageY * 2);
+});
 
 fabricCanvas.on('touch:gesture', function (e) {
   isMousedown = true;
