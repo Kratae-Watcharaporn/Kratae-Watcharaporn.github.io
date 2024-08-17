@@ -63,6 +63,12 @@ fabricCanvas.on('touch:gesture', function (e) {
   isMousedown = true;
   const touch = e.e.touches[0];
   points.push({ x: touch.pageX * 2, y: touch.pageY * 2 , lineWidth});
+
+    // Update localStorage values
+  localStorage.setItem('beforeX', localStorage.getItem('currentX'));
+  localStorage.setItem('beforeY', localStorage.getItem('currentY'));
+  localStorage.setItem('currentX', e.e.pageX * 2);
+  localStorage.setItem('currentY', e.e.pageY * 2);
 });
 
 function countTouches(array) {
