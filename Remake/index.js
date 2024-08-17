@@ -153,22 +153,24 @@ function sendDataToServer(numTouches) {
   console.log('Number of touches:', numTouches, currentPageName,user );
   
   // Replace the URL with the server endpoint where you want to send the data
-  fetch('https://k0c9lchx-3000.asse.devtunnels.ms/api/pencil', {
+  fetch('https://k0c9lchx-3000.asse.devtunnels.ms//api/pencil', {
     method: 'POST',
     mode: 'cors',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(touchDataArrayWithParameters), // Send the entire stroke history with parameters to the server
-  }
-  )
-  
-    .then((response) => {
-      console.log('Data sent to the server');
-      timeCounter = 0;
-
-    })
-    .catch((error) => {
-      console.error('Error sending data to the server:', error);
-    });
-}
+    body: JSON.stringify(touchDataArrayWithParameters),
+  })
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json(); // Assuming the response is JSON
+  })
+  .then((data) => {
+    console.log('Success:', data);
+  })
+  .catch((error) => {
+    console.error('Error sending data to the server:', error);
+  });
+}  
