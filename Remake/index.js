@@ -47,17 +47,17 @@ function drawOnCanvas(points) {
   }
 }
 
-fabricCanvas.on('mouse:down', function (e) {
-  console.log('Mouse down event triggered');
-  isMousedown = true;
-  points.push({ x: e.e.pageX * 2, y: e.e.pageY * 2, lineWidth });
+// fabricCanvas.on('mouse:down', function (e) {
+//   console.log('Mouse down event triggered');
+//   isMousedown = true;
+//   points.push({ x: e.e.pageX * 2, y: e.e.pageY * 2, lineWidth });
 
   // Update localStorage values
-  localStorage.setItem('beforeX', localStorage.getItem('currentX'));
-  localStorage.setItem('beforeY', localStorage.getItem('currentY'));
-  localStorage.setItem('currentX', e.e.pageX * 2);
-  localStorage.setItem('currentY', e.e.pageY * 2);
-});
+  // localStorage.setItem('beforeX', localStorage.getItem('currentX'));
+  // localStorage.setItem('beforeY', localStorage.getItem('currentY'));
+  // localStorage.setItem('currentX', e.e.pageX * 2);
+  // localStorage.setItem('currentY', e.e.pageY * 2);
+// });
 
 fabricCanvas.on('touch:gesture', function (e) {
   isMousedown = true;
@@ -243,6 +243,7 @@ function sendDataToServer(numTouches) {
   
   // Replace the URL with the server endpoint where you want to send the data
   fetch('https://k0c9lchx-3000.asse.devtunnels.ms/api/pencil', {
+    
     method: 'POST',
     mode: 'cors',
     headers: {
