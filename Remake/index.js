@@ -47,52 +47,142 @@ function drawOnCanvas(points) {
   }
 }
 
+fabricCanvas.on('mouse:down', function (e) {
+  console.log('Mouse down event triggered');
+  isMousedown = true;
+  points.push({ x: e.e.pageX * 2, y: e.e.pageY * 2, lineWidth });
+
+  // Update localStorage values
+  localStorage.setItem('beforeX', localStorage.getItem('currentX'));
+  localStorage.setItem('beforeY', localStorage.getItem('currentY'));
+  localStorage.setItem('currentX', e.e.pageX * 2);
+  localStorage.setItem('currentY', e.e.pageY * 2);
+});
+
 fabricCanvas.on('touch:gesture', function (e) {
   isMousedown = true;
   const touch = e.e.touches[0];
-  points.push({ x: touch.pageX * 2, y: touch.pageY * 2, lineWidth });
+  points.push({ x: touch.pageX * 2, y: touch.pageY * 2 , lineWidth});
 });
 
-fabricCanvas.on('touch:drag', function (e) {
+function countTouches(array) {
+  let count = 0;
+  for (const _ of array) {
+    count++;
+  }
+  return count;
+}
+for (const ev of ['touchmove', 'mousemove']) {
+  canvas.addEventListener(ev, function (e) {
+    if (!isMousedown) return;
+    e.preventDefault();
+
+    let pressure = 0.1;
+    let x, y;
+
+    if (e.touches && e.touches[0] && typeof e.touches[0]["force"] !== "undefined") {
+      if (e.touches[0]["force"] > 0) {
+        pressure = e.touches[0]["force"];
+      }
+      x = e.touches[0].pageX * 2;
+      y = e.touches[0].pageY * 2;
+    } else {
+      pressure = 1.0;
+      x = e.pageX * 2;
+      y = e.pageY * 2;
+    }
+
+    // smoothen line width
+    lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
+    points.push({ x, y , lineWidth});
+    drawOnCanvas(points);
+
+    requestIdleCallback(() => {
+      $force.textContent = 'force = ' + pressure;
+
+      if (e.touches) {
+        const touch = e.touches[0];
+        if (touch) {
+          // Log the touch parameters to the console
+          console.log('Touch parameters:', {
+            rotationAngle: touch.rotationAngle,
+            altitudeAngle: touch.altitudeAngle,
+            azimuthAngle: touch.azimuthAngle,
+          });
+        } else {
+          console.log('No touch parameters available.');
+        }
+      } else {
+        console.log('Not a touch event.');
+      }
+    });
+  });
+}
+
+fabricCanvas.on('mouse:move', function (e) {
   if (!isMousedown) return;
-  e.preventDefault();
 
-  let pressure = 0.1;
-  let x, y;
+  const x = e.e.pageX * 2;
+  const y = e.e.pageY * 2;
 
+  points.push({ x, y, lineWidth });
+
+  // Update localStorage values
+  localStorage.setItem('beforeX', localStorage.getItem('currentX'));
+  localStorage.setItem('beforeY', localStorage.getItem('currentY'));
+  localStorage.setItem('currentX', x);
+  localStorage.setItem('currentY', y);
+
+  
+  // Calculate and log Euclidean distance
+  const prevX = localStorage.getItem('beforeX');
+  const prevY = localStorage.getItem('beforeY');
+  const distance = euclidean_distance(prevX, prevY, x, y);
+  console.log('Euclidean distance:', distance);
+
+  drawOnCanvas(points);
+});
+
+
+fabricCanvas.on('touch:drag', function (e) {
+  if (!isMousedown) return
+  e.preventDefault()
+
+  let pressure = 0.1
+  let x, y
   if (e.touches && e.touches[0] && typeof e.touches[0]["force"] !== "undefined") {
     if (e.touches[0]["force"] > 0) {
-      pressure = e.touches[0]["force"];
+      pressure = e.touches[0]["force"]
     }
-    x = e.touches[0].pageX * 2;
-    y = e.touches[0].pageY * 2;
+    x = e.touches[0].pageX * 2
+    y = e.touches[0].pageY * 2
   } else {
-    pressure = 1.0;
-    x = e.pageX * 2;
-    y = e.pageY * 2;
+    pressure = 1.0
+    x = e.pageX * 2
+    y = e.pageY * 2
   }
 
-  // Smoothen line width
-  lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
-  points.push({ x, y, lineWidth });
+  // smoothen line width
+  lineWidth = (Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8)
+  points.push({ x, y , lineWidth})
 
   drawOnCanvas(points);
 
   requestIdleCallback(() => {
-    $force.textContent = 'force = ' + pressure;
+    $force.textContent = 'force = ' + pressure
 
-    const touch = e.touches ? e.touches[0] : null;
+    const touch = e.touches ? e.touches[0] : null
     if (touch) {
       $touches.innerHTML = `
         rotationAngle = ${touch.rotationAngle} <br/>
         altitudeAngle = ${touch.altitudeAngle} <br/>
         azimuthAngle = ${touch.azimuthAngle} <br/>
-      `;
+      `
     }
-  });
-});
+  })
+})
 
-fabricCanvas.on('touch:end', function () {
+fabricCanvas.on('mouse:up', function (e) {
   isMousedown = false;
 
   requestIdleCallback(function () {
@@ -105,7 +195,6 @@ fabricCanvas.on('touch:end', function () {
     timeCounter = 0;
   });
 });
-
 function drawLine(start, end) {
   fabricCanvas.getContext().beginPath();
   fabricCanvas.getContext().moveTo(start.x, start.y);
@@ -153,24 +242,22 @@ function sendDataToServer(numTouches) {
   console.log('Number of touches:', numTouches, currentPageName,user );
   
   // Replace the URL with the server endpoint where you want to send the data
-  fetch('https://k0c9lchx-3000.asse.devtunnels.ms//api/pencil', {
+  fetch('https://k0c9lchx-3000.asse.devtunnels.ms/api/pencil', {
     method: 'POST',
     mode: 'cors',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(touchDataArrayWithParameters),
-  })
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json(); // Assuming the response is JSON
-  })
-  .then((data) => {
-    console.log('Success:', data);
-  })
-  .catch((error) => {
-    console.error('Error sending data to the server:', error);
-  });
-}  
+    body: JSON.stringify(touchDataArrayWithParameters), // Send the entire stroke history with parameters to the server
+  }
+  )
+  
+    .then((response) => {
+      console.log('Data sent to the server');
+      timeCounter = 0;
+
+    })
+    .catch((error) => {
+      console.error('Error sending data to the server:', error);
+    });
+}
