@@ -52,7 +52,7 @@ fabricCanvas.on('mouse:down', function (e) {
   isMousedown = true;
   points.push({ x: e.e.pageX * 2, y: e.e.pageY * 2, lineWidth });
 
-  Update localStorage values
+  // Update localStorage values
   localStorage.setItem('beforeX', localStorage.getItem('currentX'));
   localStorage.setItem('beforeY', localStorage.getItem('currentY'));
   localStorage.setItem('currentX', e.e.pageX * 2);
