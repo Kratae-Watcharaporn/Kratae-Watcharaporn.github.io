@@ -1,3 +1,4 @@
+
 const $force = document.querySelector('#force'); // Replace with the actual ID of the element
 const $touches = document.querySelector('#touches'); // Replace with the actual ID of the element
 const fabricCanvas = new fabric.Canvas('canvas', { isDrawingMode: false });
@@ -6,19 +7,19 @@ fabricCanvas.setBackgroundImage('', fabricCanvas.renderAll.bind(fabricCanvas));
 let lineCount = 1; // Initialize the line count
 let rotationAngle = 0;
 let altitudeAngle = 0;
-let azimuthAngle = 0;
-const user = localStorage.getItem('username');
+let azimuthAngle =  0;
+var user = localStorage.getItem('username');
 localStorage.setItem('beforeX', 0);
 localStorage.setItem('beforeY', 0);
 localStorage.setItem('currentX', 0);
 localStorage.setItem('currentY', 0);
 
-console.log('user:', user);
-let lineWidth = 0;
+console.log('user:', user );
+let lineWidth = 0 ;
 let isMousedown = false;
 let points = [];
 
-let timeCounter = 0; // Initialize the timeCounter
+let timeCounter = 0;    // Initialize the timeCounter
 fabricCanvas.width = window.innerWidth * 2;
 fabricCanvas.height = window.innerHeight * 2;
 
@@ -31,12 +32,12 @@ fabricCanvas.freeDrawingBrush.width = 7;
 
 fabricCanvas.isDrawingMode = !fabricCanvas.isDrawingMode;
 const currentPageURL = window.location.href;
-
 function euclidean_distance(x1, y1, x2, y2) {
   const squared_distance = (x2 - x1) ** 2 + (y2 - y1) ** 2;
   const distance = Math.sqrt(squared_distance);
   return distance;
 }
+
 
 function drawOnCanvas(points) {
   for (let i = 1; i < points.length; i++) {
@@ -46,41 +47,47 @@ function drawOnCanvas(points) {
   }
 }
 
-fabricCanvas.on('touch:start', function (e) {
-  console.log('Touch start event triggered');
+fabricCanvas.on('touch:gesture', function (e) {
   isMousedown = true;
   const touch = e.e.touches[0];
   points.push({ x: touch.pageX * 2, y: touch.pageY * 2, lineWidth });
-
-  // Update localStorage values
-  localStorage.setItem('beforeX', localStorage.getItem('currentX'));
-  localStorage.setItem('beforeY', localStorage.getItem('currentY'));
-  localStorage.setItem('currentX', touch.pageX * 2);
-  localStorage.setItem('currentY', touch.pageY * 2);
 });
 
-fabricCanvas.on('touch:move', function (e) {
+fabricCanvas.on('touch:drag', function (e) {
   if (!isMousedown) return;
+  e.preventDefault();
 
-  const touch = e.e.touches[0];
-  let pressure = touch.force || 0.1;
-  const x = touch.pageX * 2;
-  const y = touch.pageY * 2;
+  let pressure = 0.1;
+  let x, y;
+
+  if (e.touches && e.touches[0] && typeof e.touches[0]["force"] !== "undefined") {
+    if (e.touches[0]["force"] > 0) {
+      pressure = e.touches[0]["force"];
+    }
+    x = e.touches[0].pageX * 2;
+    y = e.touches[0].pageY * 2;
+  } else {
+    pressure = 1.0;
+    x = e.pageX * 2;
+    y = e.pageY * 2;
+  }
 
   // Smoothen line width
   lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
   points.push({ x, y, lineWidth });
+
   drawOnCanvas(points);
 
   requestIdleCallback(() => {
     $force.textContent = 'force = ' + pressure;
 
+    const touch = e.touches ? e.touches[0] : null;
     if (touch) {
-      console.log('Touch parameters:', {
-        rotationAngle: touch.rotationAngle,
-        altitudeAngle: touch.altitudeAngle,
-        azimuthAngle: touch.azimuthAngle,
-      });
+      $touches.innerHTML = `
+        rotationAngle = ${touch.rotationAngle} <br/>
+        altitudeAngle = ${touch.altitudeAngle} <br/>
+        azimuthAngle = ${touch.azimuthAngle} <br/>
+      `;
     }
   });
 });
@@ -89,7 +96,7 @@ fabricCanvas.on('touch:end', function () {
   isMousedown = false;
 
   requestIdleCallback(function () {
-    const numTouches = points.length; // Count the number of touches
+    const numTouches = countTouches(points); // Count the number of touches
     strokeHistory.push([...points]); // Add the current touch data array to the strokeHistory
     points = [];
     sendDataToServer(numTouches); // Call the sendDataToServer function with the number of touches
@@ -127,24 +134,24 @@ function sendDataToServer(numTouches) {
   const currentY = localStorage.getItem('currentY');
   const distance = euclidean_distance(prevX, prevY, currentX, currentY);
   const pressure = points.length > 0 ? points[points.length - 1].lineWidth : 0;
-
+  // Convert the points object into an array of objects with additional touch parameters
   const touchDataArrayWithParameters = strokeHistory.flat().map(point => ({
     ...point,
-    rotationAngle: rotationAngle || 0,
+    rotationAngle: rotationAngle ||  0,
     altitudeAngle: altitudeAngle || 0,
-    azimuthAngle: azimuthAngle || 0,
+    azimuthAngle:  azimuthAngle || 0,
     currentPageName: currentPageName,
     lineCount: lineCount,
     timestamp: formattedTimestamp,
     user: user,
     distance: distance || 0, // Include the Euclidean distance
     force: pressure, // Include the force value
-    timeCounter: timeCounter++, // Initialize the timeCounter
+    timeCounter: timeCounter++  ,    // Initialize the timeCounter
   }));
-
-  console.log('Stroke history from canvas with parameters:', touchDataArrayWithParameters);
-  console.log('Number of touches:', numTouches, currentPageName, user);
-
+  
+  console.log('Stroke history from canvas with parameters:', touchDataArrayWithParameters );
+  console.log('Number of touches:', numTouches, currentPageName,user );
+  
   // Replace the URL with the server endpoint where you want to send the data
   fetch('https://k0c9lchx-3000.asse.devtunnels.ms/api/pencil', {
     method: 'POST',
@@ -153,10 +160,13 @@ function sendDataToServer(numTouches) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(touchDataArrayWithParameters), // Send the entire stroke history with parameters to the server
-  })
+  }
+  )
+  
     .then((response) => {
       console.log('Data sent to the server');
       timeCounter = 0;
+
     })
     .catch((error) => {
       console.error('Error sending data to the server:', error);
