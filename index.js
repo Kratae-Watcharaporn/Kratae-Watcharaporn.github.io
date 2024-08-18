@@ -1,14 +1,13 @@
-const $force = document.querySelector('#force');
-const $touches = document.querySelector('#touches');
+const $force = document.querySelector('#force'); // Replace with the actual ID of the element
+const $touches = document.querySelector('#touches'); // Replace with the actual ID of the element
 const fabricCanvas = new fabric.Canvas('canvas', { isDrawingMode: false });
 const currentPageName = window.location.pathname.split('/').pop();
 fabricCanvas.setBackgroundImage('', fabricCanvas.renderAll.bind(fabricCanvas));
-
 let lineCount = 1;
 let rotationAngle = 0;
 let altitudeAngle = 0;
 let azimuthAngle = 0;
-let user = localStorage.getItem('username');
+var user = localStorage.getItem('username');
 localStorage.setItem('beforeX', 0);
 localStorage.setItem('beforeY', 0);
 localStorage.setItem('currentX', 0);
@@ -30,10 +29,12 @@ fabricCanvas.freeDrawingBrush.color = 'black';
 fabricCanvas.freeDrawingBrush.width = 7;
 
 fabricCanvas.isDrawingMode = !fabricCanvas.isDrawingMode;
+const currentPageURL = window.location.href;
 
 function euclidean_distance(x1, y1, x2, y2) {
   const squared_distance = (x2 - x1) ** 2 + (y2 - y1) ** 2;
-  return Math.sqrt(squared_distance);
+  const distance = Math.sqrt(squared_distance);
+  return distance;
 }
 
 function drawOnCanvas(points) {
@@ -54,25 +55,36 @@ fabricCanvas.on('mouse:down', function (e) {
   localStorage.setItem('currentY', e.e.pageY * 2);
 });
 
-fabricCanvas.on('mouse:move', function (e) {
-  if (!isMousedown) return;
+for (const ev of ['touchmove', 'mousemove']) {
+  fabricCanvas.upperCanvasEl.addEventListener(ev, function (e) {
+    if (!isMousedown) return;
+    e.preventDefault();
 
-  const x = e.e.pageX * 2;
-  const y = e.e.pageY * 2;
+    let pressure = e.pressure || 1.0;
+    let x = e.pageX * 2;
+    let y = e.pageY * 2;
 
-  let pressure = 1.0;
-  if (e.e.pressure !== undefined) {
-    pressure = e.e.pressure;
-  }
+    lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
+    points.push({ x, y, lineWidth });
+    drawOnCanvas(points);
 
-  lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
-  points.push({ x, y, lineWidth });
-  drawOnCanvas(points);
-
-  requestIdleCallback(() => {
-    $force.textContent = 'force = ' + pressure;
+    requestIdleCallback(() => {
+      $force.textContent = 'force = ' + pressure;
+      
+      if (e.touches && e.touches.length > 0) {
+        const touch = e.touches[0];
+        rotationAngle = touch.rotationAngle || 0;
+        altitudeAngle = touch.altitudeAngle || 0;
+        azimuthAngle = touch.azimuthAngle || 0;
+        $touches.innerHTML = `
+          rotationAngle = ${rotationAngle} <br/>
+          altitudeAngle = ${altitudeAngle} <br/>
+          azimuthAngle = ${azimuthAngle} <br/>
+        `;
+      }
+    });
   });
-});
+}
 
 fabricCanvas.on('mouse:up', function (e) {
   isMousedown = false;
