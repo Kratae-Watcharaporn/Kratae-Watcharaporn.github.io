@@ -1,10 +1,7 @@
-const $force = document.querySelector('#force');
-const $touches = document.querySelector('#touches');
 const fabricCanvas = new fabric.Canvas('canvas', { isDrawingMode: false });
 const currentPageName = window.location.pathname.split('/').pop();
-let lineCount = 1;
-let isMousedown = false;
 let points = [];
+let isDrawing = false;
 
 fabricCanvas.width = window.innerWidth * 2;
 fabricCanvas.height = window.innerHeight * 2;
@@ -12,105 +9,102 @@ fabricCanvas.height = window.innerHeight * 2;
 fabricCanvas.freeDrawingBrush.color = 'black';
 fabricCanvas.freeDrawingBrush.width = 7;
 
-const strokeHistory = [];
-let timeCounter = 0;
-fabricCanvas.isDrawingMode = !fabricCanvas.isDrawingMode;
-
 function drawOnCanvas(points) {
-  for (let i = 1; i < points.length; i++) {
-    const startPoint = points[i - 1];
-    const endPoint = points[i];
-    drawLine(startPoint, endPoint);
-  }
+    const ctx = fabricCanvas.getContext();
+    ctx.beginPath();
+    for (let i = 1; i < points.length; i++) {
+        const start = points[i - 1];
+        const end = points[i];
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+    }
+    ctx.lineWidth = points[points.length - 1].force * 10;
+    ctx.strokeStyle = 'black';
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    ctx.closePath();
 }
 
 fabricCanvas.on('mouse:down', function (e) {
-  isMousedown = true;
-  points.push({ x: e.e.pageX * 2, y: e.e.pageY * 2, force: 1.0 });
-});
-
-fabricCanvas.on('touch:gesture', function (e) {
-  isMousedown = true;
-  const touch = e.e.touches[0];
-  points.push({
-    x: touch.pageX * 2,
-    y: touch.pageY * 2,
-    force: touch.force || 1.0,
-    rotationAngle: touch.rotationAngle || 0,
-    altitudeAngle: touch.altitudeAngle || 0,
-    azimuthAngle: touch.azimuthAngle || 0,
-    currentPageName: currentPageName,
-    timestamp: Date.now()
-  });
+    isDrawing = true;
+    points.push({ x: e.e.pageX * 2, y: e.e.pageY * 2, force: 1.0 });
 });
 
 fabricCanvas.on('mouse:move', function (e) {
-  if (!isMousedown) return;
-
-  const x = e.e.pageX * 2;
-  const y = e.e.pageY * 2;
-
-  points.push({
-    x: x,
-    y: y,
-    force: 1.0,
-    currentPageName: currentPageName,
-    timestamp: Date.now()
-  });
-
-  drawOnCanvas(points);
-});
-
-fabricCanvas.on('touch:drag', function (e) {
-  if (!isMousedown) return;
-  const touch = e.e.touches[0];
-  points.push({
-    x: touch.pageX * 2,
-    y: touch.pageY * 2,
-    force: touch.force || 1.0,
-    rotationAngle: touch.rotationAngle || 0,
-    altitudeAngle: touch.altitudeAngle || 0,
-    azimuthAngle: touch.azimuthAngle || 0,
-    currentPageName: currentPageName,
-    timestamp: Date.now()
-  });
-
-  drawOnCanvas(points);
+    if (!isDrawing) return;
+    points.push({ x: e.e.pageX * 2, y: e.e.pageY * 2, force: 1.0 });
+    drawOnCanvas(points);
 });
 
 fabricCanvas.on('mouse:up', function () {
-  isMousedown = false;
-  strokeHistory.push([...points]);
-  points = [];
-  lineCount++;
-  sendDataToServer();
+    isDrawing = false;
+    points = [];
 });
 
-function drawLine(start, end) {
-  fabricCanvas.getContext().beginPath();
-  fabricCanvas.getContext().moveTo(start.x, start.y);
-  fabricCanvas.getContext().lineTo(end.x, end.y);
-  fabricCanvas.getContext().lineWidth = end.force * 10;
-  fabricCanvas.getContext().strokeStyle = 'black';
-  fabricCanvas.getContext().lineCap = 'round';
-  fabricCanvas.getContext().stroke();
-  fabricCanvas.getContext().closePath();
-}
+fabricCanvas.on('touch:gesture', function (e) {
+    e.preventDefault();
+    const touch = e.e.touches[0];
+    points.push({
+        x: touch.pageX * 2,
+        y: touch.pageY * 2,
+        force: touch.force || 1.0,
+        rotationAngle: touch.rotationAngle || 0,
+        altitudeAngle: touch.altitudeAngle || 0,
+        azimuthAngle: touch.azimuthAngle || 0,
+        currentPageName: currentPageName
+    });
+    drawOnCanvas(points);
+});
 
-function sendDataToServer() {
-  fetch('https://k0c9lchx-3000.asse.devtunnels.ms/api/pencil', {
-    method: 'POST',
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(strokeHistory),
-  })
-  .then((response) => {
-    console.log('Data sent to the server');
-    timeCounter = 0;
-  })
-  .catch((error) => {
-    console.error('Error sending data to the server:', error);
-  });
-}
+fabricCanvas.on('touch:drag', function (e) {
+    e.preventDefault();
+    const touch = e.e.touches[0];
+    points.push({
+        x: touch.pageX * 2,
+        y: touch.pageY * 2,
+        force: touch.force || 1.0,
+        rotationAngle: touch.rotationAngle || 0,
+        altitudeAngle: touch.altitudeAngle || 0,
+        azimuthAngle: touch.azimuthAngle || 0,
+        currentPageName: currentPageName
+    });
+    drawOnCanvas(points);
+});
+
+// Use pointer events to capture the Apple Pencil's specific data
+fabricCanvas.getElement().addEventListener('pointerdown', function(e) {
+    if (e.pointerType === 'pen') {
+        isDrawing = true;
+        points.push({
+            x: e.pageX * 2,
+            y: e.pageY * 2,
+            force: e.pressure,
+            rotationAngle: e.rotationAngle || 0,
+            altitudeAngle: e.altitudeAngle || 0,
+            azimuthAngle: e.azimuthAngle || 0,
+            currentPageName: currentPageName
+        });
+    }
+});
+
+fabricCanvas.getElement().addEventListener('pointermove', function(e) {
+    if (isDrawing && e.pointerType === 'pen') {
+        points.push({
+            x: e.pageX * 2,
+            y: e.pageY * 2,
+            force: e.pressure,
+            rotationAngle: e.rotationAngle || 0,
+            altitudeAngle: e.altitudeAngle || 0,
+            azimuthAngle: e.azimuthAngle || 0,
+            currentPageName: currentPageName
+        });
+        drawOnCanvas(points);
+    }
+});
+
+fabricCanvas.getElement().addEventListener('pointerup', function(e) {
+    if (e.pointerType === 'pen') {
+        isDrawing = false;
+        points = [];
+    }
+});
