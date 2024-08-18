@@ -70,9 +70,11 @@ for (const ev of ['touchmove', 'mousemove']) {
 
     requestIdleCallback(() => {
       $force.textContent = 'force = ' + pressure;
-      
-      if (e.touches && e.touches.length > 0) {
-        const touch = e.touches[0];
+
+      const touch = e.touches && e.touches[0] ? e.touches[0] : null;
+      logTouchParameters(touch);
+
+      if (touch) {
         rotationAngle = touch.rotationAngle || 0;
         altitudeAngle = touch.altitudeAngle || 0;
         azimuthAngle = touch.azimuthAngle || 0;
