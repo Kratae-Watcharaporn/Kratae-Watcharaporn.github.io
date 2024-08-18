@@ -1,4 +1,5 @@
-const $force = document.querySelector('#force'); // Replace with the actual ID of the element
+const $force = document.querySelector('#force');
+const $touches = document.querySelector('#touches');
 const fabricCanvas = new fabric.Canvas('canvas', { isDrawingMode: false });
 const currentPageName = window.location.pathname.split('/').pop();
 fabricCanvas.setBackgroundImage('', fabricCanvas.renderAll.bind(fabricCanvas));
@@ -7,23 +8,32 @@ let lineCount = 1;
 let rotationAngle = 0;
 let altitudeAngle = 0;
 let azimuthAngle = 0;
+let user = localStorage.getItem('username');
+localStorage.setItem('beforeX', 0);
+localStorage.setItem('beforeY', 0);
+localStorage.setItem('currentX', 0);
+localStorage.setItem('currentY', 0);
+
 let lineWidth = 0;
 let isMousedown = false;
 let points = [];
-let timeCounter = 0;
-let user = localStorage.getItem('username') || 'anonymous';
 
+let timeCounter = 0;
 fabricCanvas.width = window.innerWidth * 2;
 fabricCanvas.height = window.innerHeight * 2;
 
 const strokeHistory = [];
+
 const requestIdleCallback = window.requestIdleCallback || function (fn) { setTimeout(fn, 1) };
 
 fabricCanvas.freeDrawingBrush.color = 'black';
 fabricCanvas.freeDrawingBrush.width = 7;
 
+fabricCanvas.isDrawingMode = !fabricCanvas.isDrawingMode;
+
 function euclidean_distance(x1, y1, x2, y2) {
-  return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+  const squared_distance = (x2 - x1) ** 2 + (y2 - y1) ** 2;
+  return Math.sqrt(squared_distance);
 }
 
 function drawOnCanvas(points) {
@@ -37,49 +47,45 @@ function drawOnCanvas(points) {
 fabricCanvas.on('mouse:down', function (e) {
   isMousedown = true;
   points.push({ x: e.e.pageX * 2, y: e.e.pageY * 2, lineWidth });
+
+  localStorage.setItem('beforeX', localStorage.getItem('currentX'));
+  localStorage.setItem('beforeY', localStorage.getItem('currentY'));
+  localStorage.setItem('currentX', e.e.pageX * 2);
+  localStorage.setItem('currentY', e.e.pageY * 2);
 });
 
-for (const ev of ['pointermove', 'mousemove', 'pointerdown', 'pointerup']) {
-  fabricCanvas.upperCanvasEl.addEventListener(ev, function (e) {
-    if (ev === 'pointerdown') isMousedown = true;
-    if (ev === 'pointerup') isMousedown = false;
-    
-    if (isMousedown && (e.pointerType === 'pen' || e.pointerType === 'mouse')) {
-      e.preventDefault();
-      
-      const pressure = e.pressure || 1.0;
-      const x = e.pageX * 2;
-      const y = e.pageY * 2;
-      
-      lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
-      points.push({
-        x,
-        y,
-        lineWidth,
-        rotationAngle: e.rotationAngle || 0,
-        altitudeAngle: e.altitudeAngle || 0,
-        azimuthAngle: e.azimuthAngle || 0,
-        force: pressure
-      });
+fabricCanvas.on('mouse:move', function (e) {
+  if (!isMousedown) return;
 
-      drawOnCanvas(points);
+  const x = e.e.pageX * 2;
+  const y = e.e.pageY * 2;
 
-      requestIdleCallback(() => {
-        $force.textContent = 'force = ' + pressure;
-      });
-    }
+  let pressure = 1.0;
+  if (e.e.pressure !== undefined) {
+    pressure = e.e.pressure;
+  }
+
+  lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
+  points.push({ x, y, lineWidth });
+  drawOnCanvas(points);
+
+  requestIdleCallback(() => {
+    $force.textContent = 'force = ' + pressure;
   });
-}
+});
 
-fabricCanvas.on('mouse:up', function () {
-  if (isMousedown) {
+fabricCanvas.on('mouse:up', function (e) {
+  isMousedown = false;
+
+  requestIdleCallback(function () {
+    const numTouches = points.length;
     strokeHistory.push([...points]);
-    sendDataToServer();
+    points = [];
+    sendDataToServer(numTouches);
     resetStrokeHistory();
     lineCount++;
     timeCounter = 0;
-  }
-  isMousedown = false;
+  });
 });
 
 function drawLine(start, end) {
@@ -94,19 +100,37 @@ function drawLine(start, end) {
 }
 
 function resetStrokeHistory() {
-  strokeHistory.length = 0;
+  strokeHistory.splice(0, strokeHistory.length);
 }
 
-function sendDataToServer() {
-  const timestamp = new Date().toISOString();
+function sendDataToServer(numTouches) {
+  const timestamp = Date.now();
+  const dateObj = new Date(timestamp);
+  const formattedTimestamp = dateObj.toISOString();
+
+  const prevX = localStorage.getItem('beforeX');
+  const prevY = localStorage.getItem('beforeY');
+  const currentX = localStorage.getItem('currentX');
+  const currentY = localStorage.getItem('currentY');
+  const distance = euclidean_distance(prevX, prevY, currentX, currentY);
+  const pressure = points.length > 0 ? points[points.length - 1].lineWidth : 0;
+
   const touchDataArrayWithParameters = strokeHistory.flat().map(point => ({
     ...point,
+    rotationAngle,
+    altitudeAngle,
+    azimuthAngle,
     currentPageName,
     lineCount,
-    timestamp,
+    timestamp: formattedTimestamp,
     user,
-    timeCounter: timeCounter++
+    distance,
+    force: pressure,
+    timeCounter: timeCounter++,
   }));
+
+  console.log('Stroke history from canvas with parameters:', touchDataArrayWithParameters);
+  console.log('Number of touches:', numTouches, currentPageName, user);
 
   fetch('https://k0c9lchx-3000.asse.devtunnels.ms/api/pencil', {
     method: 'POST',
