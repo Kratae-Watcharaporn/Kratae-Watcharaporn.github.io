@@ -166,11 +166,16 @@ function sendDataToServer(numTouches) {
     },
     body: JSON.stringify(touchDataArrayWithParameters),
   })
-    .then((response) => {
-      console.log('Data sent to the server');
-      timeCounter = 0;
-    })
-    .catch((error) => {
-      console.error('Error sending data to the server:', error);
-    });
-}
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then((data) => {
+    console.log('Data sent to the server:', data);
+  })
+  .catch((error) => {
+    console.error('Error sending data to the server:', error);
+  });
+} 
