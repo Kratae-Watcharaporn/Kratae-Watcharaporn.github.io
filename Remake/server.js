@@ -2,30 +2,34 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
+
 app.use(cors({ origin: '*' }));
 app.use(express.json());
+
 mongoose.connect(
-    'mongodb+srv://Watcharaporn:Only24042538@coding.6t7m44z.mongodb.net/DrawPencil?retryWrites=true&w=majority&appName=Coding',
+  'mongodb+srv://Watcharaporn:Only24042538@coding.6t7m44z.mongodb.net/DrawPencil?retryWrites=true&w=majority&appName=Coding',
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     bufferCommands: false, // Disable buffering
   }
 );
+
 const touchevSchema = new mongoose.Schema(
   {
     x: Number,
     y: Number,
     lineWidth: Number,
-    rotationAngle: Number,
-    altitudeAngle: Number,
-    azimuthAngle: Number,
+    tiltX: Number,  // Replaced rotationAngle
+    tiltY: Number,  // Replaced altitudeAngle
+    velocity: Number, // Added velocity
+    path: [Object], // Added path (array of objects to store points)
     currentPageName: String,
     lineCount: Number,
     timestamp: String,
     user: String,
-    distance:  Number,
-    force: Number, // Add the force property
+    distance: Number,
+    force: Number,
     timeCounter: Number,
   },
   { collection: 'information' }
@@ -52,7 +56,6 @@ app.post('/api/pencil', async (req, res) => {
 
 // Start the server
 const PORT = 3000;
-// app.listen(PORT, () => {
-  app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
 });
