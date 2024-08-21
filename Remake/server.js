@@ -38,15 +38,13 @@ const touchevSchema = new mongoose.Schema(
 const Touchev = mongoose.model('Touchev', touchevSchema, 'information');
 
 app.post('/api/pencil', async (req, res) => {
+  console.log('Received data from web app:', req.body); // Log the incoming data
   const touchDataArray = req.body;
-
   try {
     if (touchDataArray.length === 0) {
       return res.status(400).json({ error: 'No touch data to save' });
     }
-
     await Touchev.insertMany(touchDataArray);
-
     return res.status(200).json({ message: 'Touchev data saved successfully' });
   } catch (err) {
     console.error('Error saving touchev data to database:', err);
