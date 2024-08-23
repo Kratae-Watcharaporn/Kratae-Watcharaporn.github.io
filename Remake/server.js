@@ -17,16 +17,15 @@ const touchevSchema = new mongoose.Schema(
     x: Number,
     y: Number,
     lineWidth: Number,
-    tiltX: Number,  // Replaced rotationAngle
-    tiltY: Number,  // Replaced altitudeAngle
-    velocity: Number, // Added velocity
-    path: [Object], // Added path (array of objects to store points)
+    rotationAngle: Number,
+    altitudeAngle: Number,
+    azimuthAngle: Number,
     currentPageName: String,
     lineCount: Number,
     timestamp: String,
     user: String,
-    distance: Number,
-    force: Number,
+    distance:  Number,
+    force: Number, // Add the force property
     timeCounter: Number,
   },
   { collection: 'information' }
@@ -35,7 +34,6 @@ const touchevSchema = new mongoose.Schema(
 const Touchev = mongoose.model('Touchev', touchevSchema, 'information');
 
 app.post('/api/pencil', async (req, res) => {
-  console.log('Request body:', req.body);
   const touchDataArray = req.body;
 
   try {
@@ -44,6 +42,7 @@ app.post('/api/pencil', async (req, res) => {
     }
 
     await Touchev.insertMany(touchDataArray);
+
     return res.status(200).json({ message: 'Touchev data saved successfully' });
   } catch (err) {
     console.error('Error saving touchev data to database:', err);

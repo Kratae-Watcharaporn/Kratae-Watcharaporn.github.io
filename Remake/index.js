@@ -4,9 +4,9 @@ const fabricCanvas = new fabric.Canvas('canvas', { isDrawingMode: false });
 const currentPageName = window.location.pathname.split('/').pop();
 fabricCanvas.setBackgroundImage('', fabricCanvas.renderAll.bind(fabricCanvas));
 let lineCount = 1;
-let tilt = { tiltX: 0, tiltY: 0 };
-let velocity = 0;
-let path = [];
+let rotationAngle = 0;
+let altitudeAngle = 0;
+let azimuthAngle = 0;
 var user = localStorage.getItem('username');
 localStorage.setItem('beforeX', 0);
 localStorage.setItem('beforeY', 0);
@@ -53,9 +53,6 @@ fabricCanvas.on('mouse:down', function (e) {
   localStorage.setItem('beforeY', localStorage.getItem('currentY'));
   localStorage.setItem('currentX', e.e.pageX * 2);
   localStorage.setItem('currentY', e.e.pageY * 2);
-
-  // Record the time for velocity calculation
-  timeCounter = Date.now();
 });
 
 for (const ev of ['pointermove', 'mousemove']) {
@@ -67,34 +64,19 @@ for (const ev of ['pointermove', 'mousemove']) {
     let x = e.pageX * 2;
     let y = e.pageY * 2;
 
-    // Calculate velocity
-    const prevX = parseFloat(localStorage.getItem('currentX'));
-    const prevY = parseFloat(localStorage.getItem('currentY'));
-    const timeElapsed = (Date.now() - timeCounter) / 1000; // seconds
-    const distance = euclidean_distance(prevX, prevY, x, y);
-    velocity = distance / timeElapsed;
-
     lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
     points.push({ x, y, lineWidth });
-
-    // Store path (sequence of points)
-    path.push({ x, y });
-
     drawOnCanvas(points);
 
     requestIdleCallback(() => {
       $force.textContent = 'force = ' + pressure;
       if (e.pointerType === 'pen') {
-        tilt.tiltX = e.tiltX || 0;
-        tilt.tiltY = e.tiltY || 0;
-        console.log('Pointer parameters:', { tiltX: tilt.tiltX, tiltY: tilt.tiltY, velocity });
+        rotationAngle = e.rotationAngle || 0;
+        altitudeAngle = e.altitudeAngle || 0;
+        azimuthAngle = e.azimuthAngle || 0;
+        console.log('Pointer parameters:', { rotationAngle, altitudeAngle, azimuthAngle });
       }
     });
-
-    // Update the previous position
-    localStorage.setItem('currentX', x);
-    localStorage.setItem('currentY', y);
-    timeCounter = Date.now(); // Reset time for the next segment
   });
 }
 
@@ -125,7 +107,6 @@ function drawLine(start, end) {
 
 function resetStrokeHistory() {
   strokeHistory.splice(0, strokeHistory.length);
-  path = [];
 }
 
 function sendDataToServer(numTouches) {
@@ -142,10 +123,9 @@ function sendDataToServer(numTouches) {
 
   const touchDataArrayWithParameters = strokeHistory.flat().map(point => ({
     ...point,
-    tiltX: tilt.tiltX,
-    tiltY: tilt.tiltY,
-    velocity,
-    path,
+    rotationAngle,
+    altitudeAngle,
+    azimuthAngle,
     currentPageName,
     lineCount,
     timestamp: formattedTimestamp,
@@ -166,16 +146,11 @@ function sendDataToServer(numTouches) {
     },
     body: JSON.stringify(touchDataArrayWithParameters),
   })
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then((data) => {
-    console.log('Data sent to the server:', data);
-  })
-  .catch((error) => {
-    console.error('Error sending data to the server:', error);
-  });
-} 
+    .then((response) => {
+      console.log('Data sent to the server');
+      timeCounter = 0;
+    })
+    .catch((error) => {
+      console.error('Error sending data to the server:', error);
+    });
+}
