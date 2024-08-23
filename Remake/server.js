@@ -33,6 +33,12 @@ const touchevSchema = new mongoose.Schema(
 
 const Touchev = mongoose.model('Touchev', touchevSchema, 'information');
 
+// Middleware to log incoming data
+app.use('/api/pencil', (req, res, next) => {
+  console.log('Received data:', req.body);
+  next();
+});
+
 app.post('/api/pencil', async (req, res) => {
   const touchDataArray = req.body;
 
