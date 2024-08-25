@@ -133,7 +133,7 @@ function sendDataToServer(numTouches) {
     timestamp: formattedTimestamp,
     user,
     distance,
-    force: pressure,
+    pressure,
     timeCounter: timeCounter++,
   }));
 
