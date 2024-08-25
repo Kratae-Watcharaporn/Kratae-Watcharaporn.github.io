@@ -123,6 +123,8 @@ function sendDataToServer(numTouches) {
   const currentX = localStorage.getItem('currentX');
   const currentY = localStorage.getItem('currentY');
   const timer = localStorage.getItem('timer');
+  const timerObj = new Date(timer);
+  const formattedtimer = timerObj.toISOString();
   const distance = euclidean_distance(prevX, prevY, currentX, currentY);
   
   const pressure = points.length > 0 ? points[points.length - 1].lineWidth : 1;
@@ -134,7 +136,7 @@ function sendDataToServer(numTouches) {
     azimuthAngle,
     currentPageName,
     lineCount,
-    timestamp: timer,
+    timestamp: formattedtimer,
     user,
     distance,
     force: pressure,
