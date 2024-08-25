@@ -29,7 +29,6 @@ fabricCanvas.freeDrawingBrush.color = 'black';
 fabricCanvas.freeDrawingBrush.width = 7;
 
 fabricCanvas.isDrawingMode = !fabricCanvas.isDrawingMode;
-const currentPageURL = window.location.href;
 
 function euclidean_distance(x1, y1, x2, y2) {
   const squared_distance = (x2 - x1) ** 2 + (y2 - y1) ** 2;
@@ -47,7 +46,12 @@ function drawOnCanvas(points) {
 
 fabricCanvas.on('mouse:down', function (e) {
   isMousedown = true;
-  points.push({ x: e.e.pageX * 2, y: e.e.pageY * 2, lineWidth });
+  points.push({
+    x: e.e.pageX * 2,
+    y: e.e.pageY * 2,
+    lineWidth,
+    timestamp: new Date().toISOString() // Add timestamp when mouse is pressed down
+  });
 
   localStorage.setItem('beforeX', localStorage.getItem('currentX'));
   localStorage.setItem('beforeY', localStorage.getItem('currentY'));
@@ -65,7 +69,13 @@ for (const ev of ['pointermove', 'mousemove']) {
     let y = e.pageY * 2;
 
     lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
-    points.push({ x, y, lineWidth });
+
+    points.push({
+      x,
+      y,
+      lineWidth,
+      timestamp: new Date().toISOString() // Add timestamp for each point during movement
+    });
     drawOnCanvas(points);
 
     requestIdleCallback(() => {
@@ -80,7 +90,7 @@ for (const ev of ['pointermove', 'mousemove']) {
   });
 }
 
-fabricCanvas.on('mouse:up', function (e) {
+fabricCanvas.on('mouse:up', function () {
   isMousedown = false;
 
   requestIdleCallback(function () {
@@ -110,10 +120,6 @@ function resetStrokeHistory() {
 }
 
 function sendDataToServer(numTouches) {
-  const timestamp = Date.now();
-  const dateObj = new Date(timestamp);
-  const formattedTimestamp = dateObj.toISOString();
-
   const prevX = localStorage.getItem('beforeX');
   const prevY = localStorage.getItem('beforeY');
   const currentX = localStorage.getItem('currentX');
@@ -128,7 +134,6 @@ function sendDataToServer(numTouches) {
     azimuthAngle,
     currentPageName,
     lineCount,
-    timestamp: formattedTimestamp,
     user,
     distance,
     force: pressure,
