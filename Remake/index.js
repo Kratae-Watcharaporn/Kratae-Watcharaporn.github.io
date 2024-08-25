@@ -119,7 +119,7 @@ function sendDataToServer(numTouches) {
   const currentX = localStorage.getItem('currentX');
   const currentY = localStorage.getItem('currentY');
   const distance = euclidean_distance(prevX, prevY, currentX, currentY);
-  console.log('Point:', points);
+  
   const pressure = points.length > 0 ? points[points.length - 1].lineWidth : 1;
 
   const touchDataArrayWithParameters = strokeHistory.flat().map(point => ({
@@ -135,7 +135,7 @@ function sendDataToServer(numTouches) {
     force: pressure,
     timeCounter: timeCounter++,
   }));
-
+  console.log('Point:', points);
   console.log('Stroke history from canvas with parameters:', touchDataArrayWithParameters);
   console.log('Number of touches:', numTouches, currentPageName, user);
 
