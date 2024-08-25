@@ -70,11 +70,13 @@ for (const ev of ['pointermove', 'mousemove']) {
 
     requestIdleCallback(() => {
       $force.textContent = 'force = ' + pressure;
+      console.log('Pointer type:', e.pointerType);
       if (e.pointerType === 'pen') {
         rotationAngle = e.rotationAngle || 0;
         altitudeAngle = e.altitudeAngle || 0;
         azimuthAngle = e.azimuthAngle || 0;
         console.log('Pointer parameters:', { rotationAngle, altitudeAngle, azimuthAngle });
+        
       }
     });
   });
