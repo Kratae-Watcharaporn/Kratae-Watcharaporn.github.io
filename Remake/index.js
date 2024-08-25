@@ -12,7 +12,7 @@ localStorage.setItem('beforeX', 0);
 localStorage.setItem('beforeY', 0);
 localStorage.setItem('currentX', 0);
 localStorage.setItem('currentY', 0);
-localStorage.setItem('time', Date.now());
+localStorage.setItem('timer', Date.now());
 
 let lineWidth = 0;
 let isMousedown = false;
