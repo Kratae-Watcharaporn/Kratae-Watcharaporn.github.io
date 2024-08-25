@@ -53,6 +53,7 @@ fabricCanvas.on('mouse:down', function (e) {
   localStorage.setItem('beforeY', localStorage.getItem('currentY'));
   localStorage.setItem('currentX', e.e.pageX * 2);
   localStorage.setItem('currentY', e.e.pageY * 2);
+  localStorage.setItem('time', Date.now());
 });
 
 for (const ev of ['pointermove', 'mousemove']) {
@@ -66,6 +67,7 @@ for (const ev of ['pointermove', 'mousemove']) {
     let y = e.pageY * 2;
 
     lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
+
     points.push({ x, y, lineWidth });
     drawOnCanvas(points);
 
@@ -119,6 +121,7 @@ function sendDataToServer(numTouches) {
   const prevY = localStorage.getItem('beforeY');
   const currentX = localStorage.getItem('currentX');
   const currentY = localStorage.getItem('currentY');
+  const timer = localStorage.getItem('timer');
   const distance = euclidean_distance(prevX, prevY, currentX, currentY);
   
   const pressure = points.length > 0 ? points[points.length - 1].lineWidth : 1;
@@ -130,7 +133,7 @@ function sendDataToServer(numTouches) {
     azimuthAngle,
     currentPageName,
     lineCount,
-    timestamp: formattedTimestamp,
+    timestamp: timer,
     user,
     distance,
     force: pressure,
