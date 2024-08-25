@@ -109,7 +109,7 @@ function resetStrokeHistory() {
   strokeHistory.splice(0, strokeHistory.length);
 }
 
-function sendDataToServer(numTouches, pressure) { // รับ pressure จาก event
+function sendDataToServer(numTouches) {
   const timestamp = Date.now();
   const dateObj = new Date(timestamp);
   const formattedTimestamp = dateObj.toISOString();
@@ -119,9 +119,7 @@ function sendDataToServer(numTouches, pressure) { // รับ pressure จา�
   const currentX = localStorage.getItem('currentX');
   const currentY = localStorage.getItem('currentY');
   const distance = euclidean_distance(prevX, prevY, currentX, currentY);
-  // const pressure = points.length > 0 ? points[points.length - 1].lineWidth : 0;
-  // const pressure = Math.exp(lineWidth / 40) - 1;
-  pressure = pressure || 1.0;
+  const pressure = points.length > 0 ? points[points.length - 1].lineWidth : 1;
 
   const touchDataArrayWithParameters = strokeHistory.flat().map(point => ({
     ...point,
