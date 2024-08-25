@@ -54,7 +54,7 @@ fabricCanvas.on('mouse:down', function (e) {
   localStorage.setItem('beforeY', localStorage.getItem('currentY'));
   localStorage.setItem('currentX', e.e.pageX * 2);
   localStorage.setItem('currentY', e.e.pageY * 2);
-  localStorage.setItem('time', Date.now());
+  localStorage.setItem('timer', Date.now());
 });
 
 for (const ev of ['pointermove', 'mousemove']) {
