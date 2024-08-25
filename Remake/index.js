@@ -119,6 +119,7 @@ function sendDataToServer(numTouches) {
   const currentX = localStorage.getItem('currentX');
   const currentY = localStorage.getItem('currentY');
   const distance = euclidean_distance(prevX, prevY, currentX, currentY);
+  console.log('Point:', points);
   const pressure = points.length > 0 ? points[points.length - 1].lineWidth : 1;
 
   const touchDataArrayWithParameters = strokeHistory.flat().map(point => ({
