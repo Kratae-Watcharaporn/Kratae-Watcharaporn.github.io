@@ -60,6 +60,7 @@ for (const ev of ['pointermove', 'mousemove']) {
     if (!isMousedown) return;
     e.preventDefault();
 
+    console.log(e);
     let pressure = e.pressure || 1.0;
     let x = e.pageX * 2;
     let y = e.pageY * 2;
@@ -135,7 +136,6 @@ function sendDataToServer(numTouches) {
     force: pressure,
     timeCounter: timeCounter++,
   }));
-  console.log('Point:', points);
   console.log('Stroke history from canvas with parameters:', touchDataArrayWithParameters);
   console.log('Number of touches:', numTouches, currentPageName, user);
 
