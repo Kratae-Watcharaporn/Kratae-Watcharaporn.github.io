@@ -12,7 +12,7 @@ localStorage.setItem('beforeX', 0);
 localStorage.setItem('beforeY', 0);
 localStorage.setItem('currentX', 0);
 localStorage.setItem('currentY', 0);
-localStorage.setItem('timer', Date.now());
+localStorage.setItem('timer', 0);
 
 let lineWidth = 0;
 let isMousedown = false;
@@ -54,7 +54,10 @@ fabricCanvas.on('mouse:down', function (e) {
   localStorage.setItem('beforeY', localStorage.getItem('currentY'));
   localStorage.setItem('currentX', e.e.pageX * 2);
   localStorage.setItem('currentY', e.e.pageY * 2);
-  localStorage.setItem('timer', Date.now());
+  const timer = Date.now();
+  const timerObj = new Date(timer);
+  const formattedtimer = timerObj.toISOString();
+  localStorage.setItem('timer', formattedtimer);
 });
 
 for (const ev of ['pointermove', 'mousemove']) {
@@ -123,8 +126,8 @@ function sendDataToServer(numTouches) {
   const currentX = localStorage.getItem('currentX');
   const currentY = localStorage.getItem('currentY');
   const timer = localStorage.getItem('timer');
-  const timerObj = new Date(timer);
-  const formattedtimer = timerObj.toISOString();
+  // const timerObj = new Date(timer);
+  // const formattedtimer = timerObj.toISOString();
   const distance = euclidean_distance(prevX, prevY, currentX, currentY);
   
   const pressure = points.length > 0 ? points[points.length - 1].lineWidth : 1;
@@ -136,7 +139,7 @@ function sendDataToServer(numTouches) {
     azimuthAngle,
     currentPageName,
     lineCount,
-    timestamp: formattedtimer,
+    timestamp: timer,
     user,
     distance,
     force: pressure,
