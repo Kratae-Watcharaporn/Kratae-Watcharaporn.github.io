@@ -54,9 +54,10 @@ fabricCanvas.on('mouse:down', function (e) {
   localStorage.setItem('beforeY', localStorage.getItem('currentY'));
   localStorage.setItem('currentX', e.e.pageX * 2);
   localStorage.setItem('currentY', e.e.pageY * 2);
-  const timer = Date.now();  // ใช้ timestamp เป็นตัวเลข
-  localStorage.setItem('timer', timer);  // เก็บ timestamp ลงใน localStorage
-});
+  // เก็บเป็น timestamp ที่เป็นตัวเลข
+  const timer = Date.now();  
+  localStorage.setItem('timer', timer.toString());  // เก็บเป็น string ของตัวเลข
+  });
 
 for (const ev of ['pointermove', 'mousemove']) {
   fabricCanvas.upperCanvasEl.addEventListener(ev, function (e) {
@@ -124,11 +125,13 @@ function sendDataToServer(numTouches) {
   const currentX = localStorage.getItem('currentX');
   const currentY = localStorage.getItem('currentY');
   const timer = localStorage.getItem('timer');
-    // ตรวจสอบว่ามีค่า timer และแปลงเป็น ISO string อย่างถูกต้อง
-  let formattedTimer = formattedTimestamp; // ตั้งค่าเริ่มต้นเป็นเวลาปัจจุบัน
-  if (timer) {
-    const timerObj = new Date(parseInt(timer));  // แปลง timer เป็นตัวเลขก่อน
-    formattedTimer = timerObj.toISOString();  // แปลงเป็น ISO string
+  let formattedTimer = new Date().toISOString(); // ใช้เวลาปัจจุบันเป็นค่าเริ่มต้น
+  // ตรวจสอบว่า timer เป็นตัวเลขที่ถูกต้อง
+  if (timer && !isNaN(parseInt(timer))) {
+    const timerObj = new Date(parseInt(timer));  // แปลงเป็นตัวเลขก่อน
+    if (!isNaN(timerObj.getTime())) {  // ตรวจสอบว่าการแปลงเป็นวันที่สำเร็จ
+      formattedTimer = timerObj.toISOString();  // แปลงเป็น ISO string
+    }
   }
   const distance = euclidean_distance(prevX, prevY, currentX, currentY);
   
