@@ -12,7 +12,6 @@ localStorage.setItem('beforeX', 0);
 localStorage.setItem('beforeY', 0);
 localStorage.setItem('currentX', 0);
 localStorage.setItem('currentY', 0);
-localStorage.setItem('timer', 0);
 
 let lineWidth = 0;
 let isMousedown = false;
@@ -54,23 +53,18 @@ fabricCanvas.on('mouse:down', function (e) {
   localStorage.setItem('beforeY', localStorage.getItem('currentY'));
   localStorage.setItem('currentX', e.e.pageX * 2);
   localStorage.setItem('currentY', e.e.pageY * 2);
-  // เก็บเป็น timestamp ที่เป็นตัวเลข
-  const timer = Date.now();  
-  localStorage.setItem('timer', timer.toString());  // เก็บเป็น string ของตัวเลข
-  });
+});
 
 for (const ev of ['pointermove', 'mousemove']) {
   fabricCanvas.upperCanvasEl.addEventListener(ev, function (e) {
     if (!isMousedown) return;
     e.preventDefault();
 
-    console.log(e);
     let pressure = e.pressure || 1.0;
     let x = e.pageX * 2;
     let y = e.pageY * 2;
 
     lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
-
     points.push({ x, y, lineWidth });
     drawOnCanvas(points);
 
@@ -124,18 +118,8 @@ function sendDataToServer(numTouches) {
   const prevY = localStorage.getItem('beforeY');
   const currentX = localStorage.getItem('currentX');
   const currentY = localStorage.getItem('currentY');
-  const timer = localStorage.getItem('timer');
-  let formattedTimer = new Date().toISOString(); // ใช้เวลาปัจจุบันเป็นค่าเริ่มต้น
-  // ตรวจสอบว่า timer เป็นตัวเลขที่ถูกต้อง
-  if (timer && !isNaN(parseInt(timer))) {
-    const timerObj = new Date(parseInt(timer));  // แปลงเป็นตัวเลขก่อน
-    if (!isNaN(timerObj.getTime())) {  // ตรวจสอบว่าการแปลงเป็นวันที่สำเร็จ
-      formattedTimer = timerObj.toISOString();  // แปลงเป็น ISO string
-    }
-  }
   const distance = euclidean_distance(prevX, prevY, currentX, currentY);
-  
-  const pressure = points.length > 0 ? points[points.length - 1].lineWidth : 1;
+  const pressure = points.length > 0 ? points[points.length - 1].lineWidth : 0;
 
   const touchDataArrayWithParameters = strokeHistory.flat().map(point => ({
     ...point,
@@ -144,12 +128,13 @@ function sendDataToServer(numTouches) {
     azimuthAngle,
     currentPageName,
     lineCount,
-    timestamp: formattedTimer, // ใช้เวลาที่ถูกฟอร์แมตแล้ว
+    timestamp: formattedTimestamp,
     user,
     distance,
     force: pressure,
     timeCounter: timeCounter++,
   }));
+
   console.log('Stroke history from canvas with parameters:', touchDataArrayWithParameters);
   console.log('Number of touches:', numTouches, currentPageName, user);
 
