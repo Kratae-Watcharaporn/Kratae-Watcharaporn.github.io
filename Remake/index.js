@@ -54,10 +54,8 @@ fabricCanvas.on('mouse:down', function (e) {
   localStorage.setItem('beforeY', localStorage.getItem('currentY'));
   localStorage.setItem('currentX', e.e.pageX * 2);
   localStorage.setItem('currentY', e.e.pageY * 2);
-  const timer = Date.now();
-  const timerObj = new Date(timer);
-  const formattedtimer = timerObj.toISOString();
-  localStorage.setItem('timer', formattedtimer);
+  const timer = Date.now();  // ใช้ timestamp เป็นตัวเลข
+  localStorage.setItem('timer', timer);  // เก็บ timestamp ลงใน localStorage
 });
 
 for (const ev of ['pointermove', 'mousemove']) {
@@ -126,8 +124,12 @@ function sendDataToServer(numTouches) {
   const currentX = localStorage.getItem('currentX');
   const currentY = localStorage.getItem('currentY');
   const timer = localStorage.getItem('timer');
-  // const timerObj = new Date(timer);
-  // const formattedtimer = timerObj.toISOString();
+    // ตรวจสอบว่ามีค่า timer และแปลงเป็น ISO string อย่างถูกต้อง
+  let formattedTimer = formattedTimestamp; // ตั้งค่าเริ่มต้นเป็นเวลาปัจจุบัน
+  if (timer) {
+    const timerObj = new Date(parseInt(timer));  // แปลง timer เป็นตัวเลขก่อน
+    formattedTimer = timerObj.toISOString();  // แปลงเป็น ISO string
+  }
   const distance = euclidean_distance(prevX, prevY, currentX, currentY);
   
   const pressure = points.length > 0 ? points[points.length - 1].lineWidth : 1;
@@ -139,7 +141,7 @@ function sendDataToServer(numTouches) {
     azimuthAngle,
     currentPageName,
     lineCount,
-    timestamp: timer,
+    timestamp: formattedTimer, // ใช้เวลาที่ถูกฟอร์แมตแล้ว
     user,
     distance,
     force: pressure,
