@@ -70,14 +70,11 @@ for (const ev of ['pointermove', 'mousemove']) {
 
     requestIdleCallback(() => {
       $force.textContent = 'force = ' + pressure;
-      console.log('Pointer type:', e.pointerType);
-      // console.log('show pressure:', e.pressure);
       if (e.pointerType === 'pen') {
         rotationAngle = e.rotationAngle || 0;
         altitudeAngle = e.altitudeAngle || 0;
         azimuthAngle = e.azimuthAngle || 0;
         console.log('Pointer parameters:', { rotationAngle, altitudeAngle, azimuthAngle });
-        
       }
     });
   });
@@ -122,7 +119,6 @@ function sendDataToServer(numTouches) {
   const currentX = localStorage.getItem('currentX');
   const currentY = localStorage.getItem('currentY');
   const distance = euclidean_distance(prevX, prevY, currentX, currentY);
-  // const pressure = e.pressure;
   const pressure = points.length > 0 ? points[points.length - 1].lineWidth : 0;
 
   const touchDataArrayWithParameters = strokeHistory.flat().map(point => ({
