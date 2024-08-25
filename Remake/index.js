@@ -71,7 +71,7 @@ for (const ev of ['pointermove', 'mousemove']) {
     requestIdleCallback(() => {
       $force.textContent = 'force = ' + pressure;
       console.log('Pointer type:', e.pointerType);
-      console.log('show pressure:', e.pressure);
+      // console.log('show pressure:', e.pressure);
       if (e.pointerType === 'pen') {
         rotationAngle = e.rotationAngle || 0;
         altitudeAngle = e.altitudeAngle || 0;
