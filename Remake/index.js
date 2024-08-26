@@ -46,6 +46,7 @@ function drawOnCanvas(points) {
 
 fabricCanvas.on('mouse:down', function (e) {
   isMousedown = true;
+  strokeStartTime = new Date(); // Record the stroke start time
   points.push({
     x: e.e.pageX * 2,
     y: e.e.pageY * 2,
@@ -69,13 +70,17 @@ for (const ev of ['pointermove', 'mousemove']) {
     let y = e.pageY * 2;
 
     lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
+    const currentTime = new Date(); // Capture the current time
+    const elapsedTime = currentTime - strokeStartTime; // Calculate the elapsed time
 
     points.push({
       x,
       y,
       lineWidth,
-      timestamp: new Date().toISOString() // Add timestamp for each point during movement
+      timestamp: currentTime.toISOString(), // Update timestamp with the current time
+      elapsedTime // Add the elapsed time to the point
     });
+    
     drawOnCanvas(points);
 
     requestIdleCallback(() => {
