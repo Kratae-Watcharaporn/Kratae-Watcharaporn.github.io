@@ -64,8 +64,9 @@ for (const ev of ['pointermove', 'mousemove']) {
     let x = e.pageX * 2;
     let y = e.pageY * 2;
     
-    // Get the real time when the event is triggered
-    let real_time = new Date().toLocaleTimeString();
+    // Get the real time with milliseconds
+    let now = new Date();
+    let real_time = now.toLocaleTimeString() + ':' + now.getMilliseconds();
     
     // Log the real time to the console
     console.log('Real Time:', real_time);
@@ -93,6 +94,7 @@ for (const ev of ['pointermove', 'mousemove']) {
     });
   });
 }
+
 
 
 fabricCanvas.on('mouse:up', function (e) {
