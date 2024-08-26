@@ -65,7 +65,7 @@ for (const ev of ['pointermove', 'mousemove']) {
     let x = e.pageX * 2;
     let y = e.pageY * 2;
     let real_time = new Date().toLocaleTimeString();
-    console.log(real_time);
+    // console.log(real_time);
 
     lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
     const currentTime = new Date(); // Capture the current time
