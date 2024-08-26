@@ -63,9 +63,11 @@ for (const ev of ['pointermove', 'mousemove']) {
     let pressure = e.pressure || 1.0;
     let x = e.pageX * 2;
     let y = e.pageY * 2;
+    let real_time = new Date().toLocaleTimeString();
+    console.log(real_time);
 
     lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
-    points.push({ x, y, lineWidth });
+    points.push({ x, y, lineWidth, real_time });
     drawOnCanvas(points);
 
     requestIdleCallback(() => {
