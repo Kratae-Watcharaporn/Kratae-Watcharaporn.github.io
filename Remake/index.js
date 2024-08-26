@@ -63,24 +63,37 @@ for (const ev of ['pointermove', 'mousemove']) {
     let pressure = e.pressure || 1.0;
     let x = e.pageX * 2;
     let y = e.pageY * 2;
+    
+    // Get the real time when the event is triggered
     let real_time = new Date().toLocaleTimeString();
-    console.log(real_time);
+    
+    // Log the real time to the console
+    console.log('Real Time:', real_time);
 
+    // Calculate line width based on pressure
     lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
+
+    // Push the current data including real_time into the points array
     points.push({ x, y, lineWidth, real_time });
+
+    // Call a function to draw the collected points on the canvas
     drawOnCanvas(points);
 
+    // Use requestIdleCallback to update additional pointer data and force
     requestIdleCallback(() => {
       $force.textContent = 'force = ' + pressure;
+      
       if (e.pointerType === 'pen') {
         rotationAngle = e.rotationAngle || 0;
         altitudeAngle = e.altitudeAngle || 0;
         azimuthAngle = e.azimuthAngle || 0;
+
         console.log('Pointer parameters:', { rotationAngle, altitudeAngle, azimuthAngle });
       }
     });
   });
 }
+
 
 fabricCanvas.on('mouse:up', function (e) {
   isMousedown = false;
