@@ -7,7 +7,6 @@ let lineCount = 1;
 let rotationAngle = 0;
 let altitudeAngle = 0;
 let azimuthAngle = 0;
-// let real_time = Date.now()
 var user = localStorage.getItem('username');
 localStorage.setItem('beforeX', 0);
 localStorage.setItem('beforeY', 0);
@@ -64,8 +63,6 @@ for (const ev of ['pointermove', 'mousemove']) {
     let pressure = e.pressure || 1.0;
     let x = e.pageX * 2;
     let y = e.pageY * 2;
-    let real_time = new Date().toLocaleTimeString();
-    // console.log(real_time);
 
     lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
     const currentTime = new Date(); // Capture the current time
@@ -75,7 +72,6 @@ for (const ev of ['pointermove', 'mousemove']) {
       x,
       y,
       lineWidth,
-      real_time,
       timestamp: currentTime.toISOString(), // Update timestamp with the current time
       elapsedTime // Add the elapsed time to the point
     });
