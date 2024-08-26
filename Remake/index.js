@@ -75,6 +75,7 @@ for (const ev of ['pointermove', 'mousemove']) {
       x,
       y,
       lineWidth,
+      real_time,
       timestamp: currentTime.toISOString(), // Update timestamp with the current time
       elapsedTime // Add the elapsed time to the point
     });
