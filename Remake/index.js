@@ -62,12 +62,22 @@ function calculate_total_drawing_time(startTime, endTime) {
 
 // Function to calculate deviation from sample line
 function calculate_deviation(points, sampleLine) {
-  let totalDeviation = 0;
-  for (let i = 0; i < points.length; i++) {
-    totalDeviation += euclidean_distance(points[i].x, points[i].y, sampleLine[i].x, sampleLine[i].y);
+  if (!sampleLine || sampleLine.length === 0) {
+    console.error('Sample line is not defined or is empty');
+    return 0;
   }
-  return totalDeviation / points.length; // ค่าเฉลี่ยของความคลาดเคลื่อน
+
+  let totalDeviation = 0;
+  for (let i = 0; i < points.length && i < sampleLine.length; i++) {
+    const dx = points[i].x - sampleLine[i].x;
+    const dy = points[i].y - sampleLine[i].y;
+    const deviation = Math.sqrt(dx * dx + dy * dy);
+    totalDeviation += deviation;
+  }
+
+  return totalDeviation;
 }
+
 
 // Function to calculate average speed
 function calculate_average_speed(points) {
