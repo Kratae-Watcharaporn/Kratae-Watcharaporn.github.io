@@ -210,18 +210,14 @@ function sendDataToServer(numTouches) {
     acceleration: point.acceleration,
     angle: point.angle,
     direction: point.direction,
+  }));
+
+  console.log("Data to server:", {
     totalDrawingTime,
     averageSpeed,
     totalDeviation,
     touchDataArrayWithParameters,
-  }));
-
-  // console.log("Data to server:", {
-  //   totalDrawingTime,
-  //   averageSpeed,
-  //   totalDeviation,
-  //   touchDataArrayWithParameters,
-  // });
+  });
 
   // ส่งข้อมูลไปยังเซิร์ฟเวอร์
   fetch('https://k0c9lchx-3000.asse.devtunnels.ms/api/pencil', {
