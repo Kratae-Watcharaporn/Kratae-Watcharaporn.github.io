@@ -18,7 +18,7 @@ let isMousedown = false;
 let points = [];
 
 let timeCounter = 0;
-let totalDrawingTime = 0; // เก็บเวลาที่ใช้วาดทั้งหมด
+let totalDrawingTime = 0;
 fabricCanvas.width = window.innerWidth * 2;
 fabricCanvas.height = window.innerHeight * 2;
 
@@ -83,7 +83,7 @@ function calculate_direction(prevX, prevY, currentX, currentY) {
   return Math.atan2(currentY - prevY, currentX - prevX); // ทิศทางในรูปแบบราดียน
 }
 
-let drawingStartTime = 0; // เริ่มนับเวลาการวาด
+let drawingStartTime = 0;
 
 fabricCanvas.on('mouse:down', function (e) {
   isMousedown = true;
@@ -94,8 +94,8 @@ fabricCanvas.on('mouse:down', function (e) {
   localStorage.setItem('currentX', e.e.pageX * 2);
   localStorage.setItem('currentY', e.e.pageY * 2);
 
-  drawingStartTime = new Date().getTime(); // Record time when mouse is pressed down
-  timeCounter = new Date().getTime(); // Record time when mouse is pressed down
+  drawingStartTime = new Date().getTime();
+  timeCounter = new Date().getTime();
 });
 
 for (const ev of ['pointermove', 'mousemove']) {
@@ -110,14 +110,14 @@ for (const ev of ['pointermove', 'mousemove']) {
     let now = new Date();
     let real_time = now.toLocaleTimeString() + ':' + now.getMilliseconds();
 
-    let timeElapsed = (new Date().getTime() - timeCounter) / 1000; // Time elapsed in seconds
+    let timeElapsed = (new Date().getTime() - timeCounter) / 1000;
     const prevX = localStorage.getItem('beforeX');
     const prevY = localStorage.getItem('beforeY');
-    const currentSpeed = calculate_speed(prevX, prevY, x, y, timeElapsed); // Calculate current speed
+    const currentSpeed = calculate_speed(prevX, prevY, x, y, timeElapsed);
     const prevSpeed = points.length > 1 ? points[points.length - 2].speed : 0;
-    const acceleration = calculate_acceleration(prevSpeed, currentSpeed, timeElapsed); // Calculate acceleration
-    const angle = calculate_angle(prevX, prevY, x, y); // Calculate angle
-    const direction = calculate_direction(prevX, prevY, x, y); // Calculate direction
+    const acceleration = calculate_acceleration(prevSpeed, currentSpeed, timeElapsed);
+    const angle = calculate_angle(prevX, prevY, x, y);
+    const direction = calculate_direction(prevX, prevY, x, y);
 
     lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
 
@@ -137,7 +137,7 @@ for (const ev of ['pointermove', 'mousemove']) {
       }
     });
 
-    timeCounter = new Date().getTime(); // Update time after pointer move
+    timeCounter = new Date().getTime();
   });
 }
 
@@ -148,7 +148,7 @@ fabricCanvas.on('mouse:up', function (e) {
     const numTouches = points.length;
     strokeHistory.push([...points]);
     points = [];
-    const drawingEndTime = new Date().getTime(); // เวลาที่เสร็จสิ้นการวาด
+    const drawingEndTime = new Date().getTime();
     totalDrawingTime = calculate_total_drawing_time(drawingStartTime, drawingEndTime);
 
     sendDataToServer(numTouches);
@@ -193,7 +193,6 @@ function sendDataToServer(numTouches) {
   const distance = euclidean_distance(prevX, prevY, currentX, currentY);
   const pressure = points.length > 0 ? points[points.length - 1].lineWidth : 0;
 
-  // คำนวณค่าต่างๆ ที่ต้องการส่งไปยังเซิร์ฟเวอร์
   const averageSpeed = calculate_average_speed(strokeHistory.flat());
   const totalDeviation = calculate_deviation(strokeHistory.flat(), sampleLine);
   
@@ -207,7 +206,6 @@ function sendDataToServer(numTouches) {
     force: pressure,
     timeCounter: timeCounter++,
 
-    // ส่งค่าที่คำนวณเพิ่มไปยังเซิร์ฟเวอร์
     speed: point.speed,
     acceleration: point.acceleration,
     angle: point.angle,
@@ -220,23 +218,26 @@ function sendDataToServer(numTouches) {
     totalDeviation,
     touchDataArrayWithParameters,
   });
-  
-  console.log('Stroke history from canvas with parameters:', touchDataArrayWithParameters);
-  console.log('Number of touches:', numTouches, currentPageName, user);
 
+  // ส่งข้อมูลไปยังเซิร์ฟเวอร์
   fetch('https://k0c9lchx-3000.asse.devtunnels.ms/api/pencil', {
     method: 'POST',
     mode: 'cors',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(touchDataArrayWithParameters),
+    body: JSON.stringify({
+      totalDrawingTime,
+      averageSpeed,
+      totalDeviation,
+      touchDataArrayWithParameters
+    }),
   })
-    .then((response) => {
-      console.log('Data sent to the server');
-      timeCounter = 0;
-    })
-    .catch((error) => {
-      console.error('Error sending data to the server:', error);
-    });
+  .then(response => {
+    console.log('Data sent to the server');
+    timeCounter = 0;
+  })
+  .catch(error => {
+    console.error('Error sending data to the server:', error);
+  });
 }
