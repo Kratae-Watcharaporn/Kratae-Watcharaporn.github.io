@@ -216,14 +216,14 @@ function sendDataToServer(numTouches) {
     touchDataArrayWithParameters,
   }));
 
-  // ตรวจสอบค่าที่จะส่งไปยังเซิร์ฟเวอร์
-  //   console.log("Data to be sent to server:", {
+  // console.log("Data to server:", {
   //   totalDrawingTime,
   //   averageSpeed,
   //   totalDeviation,
   //   touchDataArrayWithParameters,
   // });
 
+  // ส่งข้อมูลไปยังเซิร์ฟเวอร์
   fetch('https://k0c9lchx-3000.asse.devtunnels.ms/api/pencil', {
     method: 'POST',
     mode: 'cors',
@@ -237,9 +237,9 @@ function sendDataToServer(numTouches) {
       touchDataArrayWithParameters
     }),
   })
-  .then(response => response.json())  // ตรวจสอบการตอบกลับของเซิร์ฟเวอร์
-  .then(data => {
-    console.log('Server response:', data);  // ตรวจสอบข้อมูลที่ตอบกลับมาจากเซิร์ฟเวอร์
+  .then(response => {
+    console.log('Data sent to the server');
+    timeCounter = 0;
   })
   .catch(error => {
     console.error('Error sending data to the server:', error);
