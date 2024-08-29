@@ -1,5 +1,5 @@
-const $force = document.querySelector('#force'); // Replace with the actual ID of the element
-const $touches = document.querySelector('#touches'); // Replace with the actual ID of the element
+const $force = document.querySelector('#force');
+const $touches = document.querySelector('#touches');
 const fabricCanvas = new fabric.Canvas('canvas', { isDrawingMode: false });
 const currentPageName = window.location.pathname.split('/').pop();
 fabricCanvas.setBackgroundImage('', fabricCanvas.renderAll.bind(fabricCanvas));
@@ -18,10 +18,12 @@ let isMousedown = false;
 let points = [];
 
 let timeCounter = 0;
+let totalDrawingTime = 0; // เก็บเวลาที่ใช้วาดทั้งหมด
 fabricCanvas.width = window.innerWidth * 2;
 fabricCanvas.height = window.innerHeight * 2;
 
 const strokeHistory = [];
+const sampleLine = [/* ใส่ตำแหน่งจุดของเส้นตัวอย่างที่นี่ */];
 
 const requestIdleCallback = window.requestIdleCallback || function (fn) { setTimeout(fn, 1) };
 
@@ -53,6 +55,36 @@ function calculate_angle(prevX, prevY, currentX, currentY) {
   return Math.atan2(currentY - prevY, currentX - prevX) * (180 / Math.PI); // Angle in degrees
 }
 
+// Function to calculate total drawing time
+function calculate_total_drawing_time(startTime, endTime) {
+  return (endTime - startTime) / 1000; // Time in seconds
+}
+
+// Function to calculate deviation from sample line
+function calculate_deviation(points, sampleLine) {
+  let totalDeviation = 0;
+  for (let i = 0; i < points.length; i++) {
+    totalDeviation += euclidean_distance(points[i].x, points[i].y, sampleLine[i].x, sampleLine[i].y);
+  }
+  return totalDeviation / points.length; // ค่าเฉลี่ยของความคลาดเคลื่อน
+}
+
+// Function to calculate average speed
+function calculate_average_speed(points) {
+  let totalSpeed = 0;
+  for (let i = 0; i < points.length; i++) {
+    totalSpeed += points[i].speed || 0;
+  }
+  return totalSpeed / points.length; // ค่าเฉลี่ยของความเร็ว
+}
+
+// Function to calculate stroke direction
+function calculate_direction(prevX, prevY, currentX, currentY) {
+  return Math.atan2(currentY - prevY, currentX - prevX); // ทิศทางในรูปแบบราดียน
+}
+
+let drawingStartTime = 0; // เริ่มนับเวลาการวาด
+
 fabricCanvas.on('mouse:down', function (e) {
   isMousedown = true;
   points.push({ x: e.e.pageX * 2, y: e.e.pageY * 2, lineWidth });
@@ -62,6 +94,7 @@ fabricCanvas.on('mouse:down', function (e) {
   localStorage.setItem('currentX', e.e.pageX * 2);
   localStorage.setItem('currentY', e.e.pageY * 2);
 
+  drawingStartTime = new Date().getTime(); // Record time when mouse is pressed down
   timeCounter = new Date().getTime(); // Record time when mouse is pressed down
 });
 
@@ -84,10 +117,11 @@ for (const ev of ['pointermove', 'mousemove']) {
     const prevSpeed = points.length > 1 ? points[points.length - 2].speed : 0;
     const acceleration = calculate_acceleration(prevSpeed, currentSpeed, timeElapsed); // Calculate acceleration
     const angle = calculate_angle(prevX, prevY, x, y); // Calculate angle
+    const direction = calculate_direction(prevX, prevY, x, y); // Calculate direction
 
     lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
 
-    points.push({ x, y, lineWidth, real_time, speed: currentSpeed, acceleration, angle });
+    points.push({ x, y, lineWidth, real_time, speed: currentSpeed, acceleration, angle, direction });
 
     drawOnCanvas(points);
 
@@ -114,6 +148,9 @@ fabricCanvas.on('mouse:up', function (e) {
     const numTouches = points.length;
     strokeHistory.push([...points]);
     points = [];
+    const drawingEndTime = new Date().getTime(); // เวลาที่เสร็จสิ้นการวาด
+    totalDrawingTime = calculate_total_drawing_time(drawingStartTime, drawingEndTime);
+
     sendDataToServer(numTouches);
     resetStrokeHistory();
     lineCount++;
@@ -156,11 +193,12 @@ function sendDataToServer(numTouches) {
   const distance = euclidean_distance(prevX, prevY, currentX, currentY);
   const pressure = points.length > 0 ? points[points.length - 1].lineWidth : 0;
 
+  // คำนวณค่าต่างๆ ที่ต้องการส่งไปยังเซิร์ฟเวอร์
+  const averageSpeed = calculate_average_speed(strokeHistory.flat());
+  const totalDeviation = calculate_deviation(strokeHistory.flat(), sampleLine);
+  
   const touchDataArrayWithParameters = strokeHistory.flat().map(point => ({
     ...point,
-    // rotationAngle,
-    // altitudeAngle,
-    // azimuthAngle,
     currentPageName,
     lineCount,
     timestamp: formattedTimestamp,
@@ -173,8 +211,16 @@ function sendDataToServer(numTouches) {
     speed: point.speed,
     acceleration: point.acceleration,
     angle: point.angle,
+    direction: point.direction,
   }));
 
+  console.log("Data to server:", {
+    totalDrawingTime,
+    averageSpeed,
+    totalDeviation,
+    touchDataArrayWithParameters,
+  });
+  
   console.log('Stroke history from canvas with parameters:', touchDataArrayWithParameters);
   console.log('Number of touches:', numTouches, currentPageName, user);
 
