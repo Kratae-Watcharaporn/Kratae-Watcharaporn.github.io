@@ -1,4 +1,5 @@
 const $force = document.querySelector('#force'); // Replace with the actual ID of the element
+const $altitudeAngle = document.querySelector('#altitudeAngle'); // อ้างอิงถึงองค์ประกอบที่มี id="altitudeAngle"
 const $touches = document.querySelector('#touches'); // Replace with the actual ID of the element
 const fabricCanvas = new fabric.Canvas('canvas', { isDrawingMode: false });
 const currentPageName = window.location.pathname.split('/').pop();
@@ -83,6 +84,7 @@ for (const ev of ['pointermove', 'mousemove']) {
     // Use requestIdleCallback to update additional pointer data and force
     requestIdleCallback(() => {
       $force.textContent = 'force = ' + pressure;
+      $altitudeAngle.textContent = 'altitudeAngle = ' + altitudeAngle;
       
       if (e.pointerType === 'pen') {
         rotationAngle = e.rotationAngle || 0;
