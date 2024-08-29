@@ -168,6 +168,11 @@ function sendDataToServer(numTouches) {
     distance,
     force: pressure,
     timeCounter: timeCounter++,
+
+    // ส่งค่าที่คำนวณเพิ่มไปยังเซิร์ฟเวอร์
+    speed: point.speed,
+    acceleration: point.acceleration,
+    angle: point.angle,
   }));
 
   console.log('Stroke history from canvas with parameters:', touchDataArrayWithParameters);
