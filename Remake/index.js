@@ -174,13 +174,7 @@ function saveDataLocally(numTouches, totalDrawingTime, averageSpeed) {
         },
         body: JSON.stringify(touchDataArrayWithParameters),
     })
-    .then(response => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error('Failed to save data');
-        }
-    })
+    .then(response => response.json())
     .then(data => {
         console.log('Data saved:', data);
     })
