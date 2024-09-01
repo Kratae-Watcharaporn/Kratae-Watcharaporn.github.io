@@ -175,7 +175,7 @@ function saveDataLocally(numTouches, totalDrawingTime, averageSpeed) {
     console.log('Number of touches:', numTouches, currentPageName, user);
 
     // Send the data to the server for saving
-    fetch('http://localhost:3000/save-csv', {
+    fetch('https://k0c9lchx-3000.asse.devtunnels.ms/save-csv', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
