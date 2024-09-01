@@ -59,6 +59,7 @@ app.post('/save-csv', (req, res) => {
                 return res.status(500).json({ message: 'Failed to save data' });
             }
 
+            console.log('Data successfully saved to CSV file');
             res.status(200).json({ message: 'Data saved successfully' });
         });
     } catch (error) {

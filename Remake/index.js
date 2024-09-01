@@ -86,7 +86,6 @@ for (const ev of ['pointermove', 'mousemove']) {
         drawOnCanvas(points);
 
         requestIdleCallback(() => {
-            // Handle force and other pointer parameters
             if (e.pointerType === 'pen') {
                 const rotationAngle = e.rotationAngle || 0;
                 const altitudeAngle = e.altitudeAngle || 0;
@@ -165,20 +164,22 @@ function saveDataLocally(numTouches, totalDrawingTime, averageSpeed) {
         averageSpeed,
     }));
 
-    console.log('Data to be sent:', touchDataArrayWithParameters);
+    console.log('Touch data array with parameters:', touchDataArrayWithParameters);
+    console.log('Number of touches:', numTouches, currentPageName, user);
 
     fetch('https://k0c9lchx-3000.asse.devtunnels.ms/save-csv', {
         method: 'POST',
+        mode: 'cors',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(touchDataArrayWithParameters),
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Data saved:', data);
+    .then((response) => response.json())
+    .then((data) => {
+        console.log('Data saved successfully:', data);
     })
-    .catch(error => {
+    .catch((error) => {
         console.error('Error saving data:', error);
     });
 }
