@@ -165,7 +165,7 @@ function saveDataLocally(numTouches, totalDrawingTime, averageSpeed) {
         averageSpeed,
     }));
 
-    console.log('Sending data to server:', touchDataArrayWithParameters);
+    console.log('Data to be sent:', touchDataArrayWithParameters);
 
     fetch('https://k0c9lchx-3000.asse.devtunnels.ms/save-csv', {
         method: 'POST',

@@ -27,38 +27,44 @@ app.post('/save-csv', (req, res) => {
     const touchDataArrayWithParameters = req.body;
 
     if (!Array.isArray(touchDataArrayWithParameters) || touchDataArrayWithParameters.length === 0) {
+        console.error('Invalid data format:', touchDataArrayWithParameters);
         return res.status(400).json({ message: 'Invalid data format' });
     }
 
-    // Convert data to CSV rows
-    const csvRows = touchDataArrayWithParameters.map(point => [
-        point.x,
-        point.y,
-        point.lineWidth,
-        point.real_time,
-        point.speed,
-        point.acceleration,
-        point.angle,
-        point.currentPageName,
-        point.lineCount,
-        point.timestamp,
-        point.user,
-        point.distance,
-        point.force,
-        point.timeCounter,
-        point.totalDrawingTime,
-        point.averageSpeed
-    ].join(",")).join("\n");
+    try {
+        // Convert data to CSV rows
+        const csvRows = touchDataArrayWithParameters.map(point => [
+            point.x,
+            point.y,
+            point.lineWidth,
+            point.real_time,
+            point.speed,
+            point.acceleration,
+            point.angle,
+            point.currentPageName,
+            point.lineCount,
+            point.timestamp,
+            point.user,
+            point.distance,
+            point.force,
+            point.timeCounter,
+            point.totalDrawingTime,
+            point.averageSpeed
+        ].join(",")).join("\n");
 
-    // Append data to the CSV file
-    fs.appendFile(csvFilePath, csvRows + "\n", 'utf8', (err) => {
-        if (err) {
-            console.error('Error writing to CSV file:', err);
-            return res.status(500).json({ message: 'Failed to save data' });
-        }
+        // Append data to the CSV file
+        fs.appendFile(csvFilePath, csvRows + "\n", 'utf8', (err) => {
+            if (err) {
+                console.error('Error writing to CSV file:', err);
+                return res.status(500).json({ message: 'Failed to save data' });
+            }
 
-        res.status(200).json({ message: 'Data saved successfully' });
-    });
+            res.status(200).json({ message: 'Data saved successfully' });
+        });
+    } catch (error) {
+        console.error('Error processing request:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 app.listen(PORT, () => {
