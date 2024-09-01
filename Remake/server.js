@@ -1,73 +1,58 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
-
+const mongoose = require('mongoose');
+const cors = require('cors');
 const app = express();
-const PORT = 3000;
-
-// Middleware to parse JSON
+app.use(cors({ origin: '*' }));
 app.use(express.json());
+mongoose.connect(
+    'mongodb+srv://Watcharaporn:Only24042538@coding.6t7m44z.mongodb.net/DrawPencil?retryWrites=true&w=majority&appName=Coding',
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    bufferCommands: false, // Disable buffering
+  }
+);
+const touchevSchema = new mongoose.Schema(
+  {
+    x: Number,
+    y: Number,
+    lineWidth: Number,
+    rotationAngle: Number,
+    altitudeAngle: Number,
+    azimuthAngle: Number,
+    currentPageName: String,
+    lineCount: Number,
+    timestamp: String,
+    user: String,
+    distance:  Number,
+    force: Number, // Add the force property
+    timeCounter: Number,
+  },
+  { collection: 'information' }
+);
 
-// Path for the CSV file
-const csvFilePath = path.join('D:', 'Kra tae', 'IS', 'Data', 'touch_data.csv');
+const Touchev = mongoose.model('Touchev', touchevSchema, 'information');
 
-// Header for CSV file
-const csvHeader = "x,y,lineWidth,real_time,speed,acceleration,angle,currentPageName,lineCount,timestamp,user,distance,force,timeCounter,totalDrawingTime,averageSpeed\n";
+app.post('/api/pencil', async (req, res) => {
+  const touchDataArray = req.body;
 
-// Create the CSV file if it does not exist
-if (!fs.existsSync(csvFilePath)) {
-    fs.writeFileSync(csvFilePath, csvHeader, 'utf8', (err) => {
-        if (err) {
-            console.error('Error creating CSV file:', err);
-        }
-    });
-}
-
-app.post('/save-csv', (req, res) => {
-    const touchDataArrayWithParameters = req.body;
-
-    if (!Array.isArray(touchDataArrayWithParameters) || touchDataArrayWithParameters.length === 0) {
-        console.error('Invalid data format:', touchDataArrayWithParameters);
-        return res.status(400).json({ message: 'Invalid data format' });
+  try {
+    if (touchDataArray.length === 0) {
+      return res.status(400).json({ error: 'No touch data to save' });
     }
 
-    try {
-        // Convert data to CSV rows
-        const csvRows = touchDataArrayWithParameters.map(point => [
-            point.x,
-            point.y,
-            point.lineWidth,
-            point.real_time,
-            point.speed,
-            point.acceleration,
-            point.angle,
-            point.currentPageName,
-            point.lineCount,
-            point.timestamp,
-            point.user,
-            point.distance,
-            point.force,
-            point.timeCounter,
-            point.totalDrawingTime,
-            point.averageSpeed
-        ].join(",")).join("\n");
+    await Touchev.insertMany(touchDataArray);
 
-        // Append data to the CSV file
-        fs.appendFile(csvFilePath, csvRows + "\n", 'utf8', (err) => {
-            if (err) {
-                console.error('Error writing to CSV file:', err);
-                return res.status(500).json({ message: 'Failed to save data' });
-            }
-
-            console.log('Data successfully saved to CSV file');
-            res.status(200).json({ message: 'Data saved successfully' });
-        });
-    } catch (error) {
-        console.error('Error processing request:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+    return res.status(200).json({ message: 'Touchev data saved successfully' });
+  } catch (err) {
+    console.error('Error saving touchev data to database:', err);
+    return res.status(500).json({ error: 'Failed to save touchev data' });
+  }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on https://k0c9lchx-3000.asse.devtunnels.ms/`);
+// Start the server
+const PORT = 3000;
+// app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
 });
