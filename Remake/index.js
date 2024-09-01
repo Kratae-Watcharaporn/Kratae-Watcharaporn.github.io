@@ -1,5 +1,3 @@
-const $force = document.querySelector('#force');
-const $touches = document.querySelector('#touches');
 const fabricCanvas = new fabric.Canvas('canvas', { isDrawingMode: false });
 const currentPageName = window.location.pathname.split('/').pop();
 fabricCanvas.setBackgroundImage('', fabricCanvas.renderAll.bind(fabricCanvas));
@@ -28,8 +26,6 @@ const requestIdleCallback = window.requestIdleCallback || function (fn) { setTim
 fabricCanvas.freeDrawingBrush.color = 'black';
 fabricCanvas.freeDrawingBrush.width = 7;
 fabricCanvas.isDrawingMode = !fabricCanvas.isDrawingMode;
-
-const currentPageURL = window.location.href;
 
 function euclidean_distance(x1, y1, x2, y2) {
     const squared_distance = (x2 - x1) ** 2 + (y2 - y1) ** 2;
@@ -90,12 +86,11 @@ for (const ev of ['pointermove', 'mousemove']) {
         drawOnCanvas(points);
 
         requestIdleCallback(() => {
-            $force.textContent = 'force = ' + pressure;
-
+            // Handle force and other pointer parameters
             if (e.pointerType === 'pen') {
-                let rotationAngle = e.rotationAngle || 0;
-                let altitudeAngle = e.altitudeAngle || 0;
-                let azimuthAngle = e.azimuthAngle || 0;
+                const rotationAngle = e.rotationAngle || 0;
+                const altitudeAngle = e.altitudeAngle || 0;
+                const azimuthAngle = e.azimuthAngle || 0;
                 console.log('Pointer parameters:', { rotationAngle, altitudeAngle, azimuthAngle });
             }
         });
@@ -123,15 +118,14 @@ fabricCanvas.on('mouse:up', function (e) {
 });
 
 function drawLine(start, end) {
-    const ctx = fabricCanvas.getContext();
-    ctx.beginPath();
-    ctx.moveTo(start.x, start.y);
-    ctx.lineTo(end.x, end.y);
-    ctx.lineWidth = end.lineWidth;
-    ctx.strokeStyle = 'black';
-    ctx.lineCap = 'round';
-    ctx.stroke();
-    ctx.closePath();
+    fabricCanvas.getContext().beginPath();
+    fabricCanvas.getContext().moveTo(start.x, start.y);
+    fabricCanvas.getContext().lineTo(end.x, end.y);
+    fabricCanvas.getContext().lineWidth = end.lineWidth;
+    fabricCanvas.getContext().strokeStyle = 'black';
+    fabricCanvas.getContext().lineCap = 'round';
+    fabricCanvas.getContext().stroke();
+    fabricCanvas.getContext().closePath();
 }
 
 function drawOnCanvas(points) {
@@ -171,10 +165,8 @@ function saveDataLocally(numTouches, totalDrawingTime, averageSpeed) {
         averageSpeed,
     }));
 
-    console.log('Stroke history from canvas with parameters:', touchDataArrayWithParameters);
-    console.log('Number of touches:', numTouches, currentPageName, user);
+    console.log('Sending data to server:', touchDataArrayWithParameters);
 
-    // Send the data to the server for saving
     fetch('https://k0c9lchx-3000.asse.devtunnels.ms/save-csv', {
         method: 'POST',
         headers: {
@@ -182,7 +174,13 @@ function saveDataLocally(numTouches, totalDrawingTime, averageSpeed) {
         },
         body: JSON.stringify(touchDataArrayWithParameters),
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Failed to save data');
+        }
+    })
     .then(data => {
         console.log('Data saved:', data);
     })

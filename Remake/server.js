@@ -20,6 +20,7 @@ if (!fs.existsSync(csvFilePath)) {
 app.post('/save-csv', (req, res) => {
     const touchDataArrayWithParameters = req.body;
 
+    // Convert array of data to CSV rows
     const csvRows = touchDataArrayWithParameters.map(point => [
         point.x,
         point.y,
@@ -39,16 +40,18 @@ app.post('/save-csv', (req, res) => {
         point.averageSpeed
     ].join(",")).join("\n");
 
+    // Append to CSV file
     fs.appendFile(csvFilePath, csvRows + "\n", (err) => {
         if (err) {
             console.error('Error writing to CSV file:', err);
             return res.status(500).json({ message: 'Failed to save data' });
         }
 
+        // Respond with success message
         res.status(200).json({ message: 'Data saved successfully' });
     });
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on https://k0c9lchx-3000.asse.devtunnels.ms/`);
 });
