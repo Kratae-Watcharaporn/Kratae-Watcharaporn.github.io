@@ -5,9 +5,6 @@ const currentPageName = window.location.pathname.split('/').pop();
 fabricCanvas.setBackgroundImage('', fabricCanvas.renderAll.bind(fabricCanvas));
 
 let lineCount = 1;
-let rotationAngle = 0;
-let altitudeAngle = 0;
-let azimuthAngle = 0;
 let user = localStorage.getItem('username');
 
 localStorage.setItem('beforeX', 0);
@@ -118,7 +115,7 @@ fabricCanvas.on('mouse:up', function (e) {
         strokeHistory.push([...points]);
         points = [];
 
-        sendDataToServer(numTouches, totalDrawingTime, averageSpeed);
+        saveDataLocally(numTouches, totalDrawingTime, averageSpeed);
         resetStrokeHistory();
         lineCount++;
         timeCounter = 0;
@@ -148,7 +145,47 @@ function resetStrokeHistory() {
     strokeHistory.splice(0, strokeHistory.length);
 }
 
-function sendDataToServer(numTouches, totalDrawingTime, averageSpeed) {
+function downloadCSV(data, filename) {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    
+    // Adding the header row
+    csvContent += "x,y,lineWidth,real_time,speed,acceleration,angle,currentPageName,lineCount,timestamp,user,distance,force,timeCounter,totalDrawingTime,averageSpeed\n";
+
+    // Adding the data rows
+    data.forEach(point => {
+        const row = [
+            point.x,
+            point.y,
+            point.lineWidth,
+            point.real_time,
+            point.speed,
+            point.acceleration,
+            point.angle,
+            point.currentPageName,
+            point.lineCount,
+            point.timestamp,
+            point.user,
+            point.distance,
+            point.force,
+            point.timeCounter,
+            point.totalDrawingTime,
+            point.averageSpeed
+        ].join(",");
+        csvContent += row + "\n";
+    });
+
+    // Creating a downloadable link
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    
+    link.click();
+    document.body.removeChild(link);
+}
+
+function saveDataLocally(numTouches, totalDrawingTime, averageSpeed) {
     const timestamp = Date.now();
     const dateObj = new Date(timestamp);
     const formattedTimestamp = dateObj.toISOString();
@@ -176,19 +213,6 @@ function sendDataToServer(numTouches, totalDrawingTime, averageSpeed) {
     console.log('Stroke history from canvas with parameters:', touchDataArrayWithParameters);
     console.log('Number of touches:', numTouches, currentPageName, user);
 
-    fetch('https://k0c9lchx-3000.asse.devtunnels.ms/api/pencil', {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(touchDataArrayWithParameters),
-    })
-        .then((response) => {
-            console.log('Data sent to the server');
-            timeCounter = 0;
-        })
-        .catch((error) => {
-            console.error('Error sending data to the server:', error);
-        });
+    // Saving the data as a CSV file
+    downloadCSV(touchDataArrayWithParameters, `touch_data_${formattedTimestamp}.csv`);
 }
