@@ -93,9 +93,9 @@ for (const ev of ['pointermove', 'mousemove']) {
             $force.textContent = 'force = ' + pressure;
 
             if (e.pointerType === 'pen') {
-                rotationAngle = e.rotationAngle || 0;
-                altitudeAngle = e.altitudeAngle || 0;
-                azimuthAngle = e.azimuthAngle || 0;
+                let rotationAngle = e.rotationAngle || 0;
+                let altitudeAngle = e.altitudeAngle || 0;
+                let azimuthAngle = e.azimuthAngle || 0;
                 console.log('Pointer parameters:', { rotationAngle, altitudeAngle, azimuthAngle });
             }
         });
@@ -123,14 +123,15 @@ fabricCanvas.on('mouse:up', function (e) {
 });
 
 function drawLine(start, end) {
-    fabricCanvas.getContext().beginPath();
-    fabricCanvas.getContext().moveTo(start.x, start.y);
-    fabricCanvas.getContext().lineTo(end.x, end.y);
-    fabricCanvas.getContext().lineWidth = end.lineWidth;
-    fabricCanvas.getContext().strokeStyle = 'black';
-    fabricCanvas.getContext().lineCap = 'round';
-    fabricCanvas.getContext().stroke();
-    fabricCanvas.getContext().closePath();
+    const ctx = fabricCanvas.getContext();
+    ctx.beginPath();
+    ctx.moveTo(start.x, start.y);
+    ctx.lineTo(end.x, end.y);
+    ctx.lineWidth = end.lineWidth;
+    ctx.strokeStyle = 'black';
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    ctx.closePath();
 }
 
 function drawOnCanvas(points) {
@@ -143,46 +144,6 @@ function drawOnCanvas(points) {
 
 function resetStrokeHistory() {
     strokeHistory.splice(0, strokeHistory.length);
-}
-
-function downloadCSV(data, filename) {
-    let csvContent = "data:text/csv;charset=utf-8,";
-    
-    // Adding the header row
-    csvContent += "x,y,lineWidth,real_time,speed,acceleration,angle,currentPageName,lineCount,timestamp,user,distance,force,timeCounter,totalDrawingTime,averageSpeed\n";
-
-    // Adding the data rows
-    data.forEach(point => {
-        const row = [
-            point.x,
-            point.y,
-            point.lineWidth,
-            point.real_time,
-            point.speed,
-            point.acceleration,
-            point.angle,
-            point.currentPageName,
-            point.lineCount,
-            point.timestamp,
-            point.user,
-            point.distance,
-            point.force,
-            point.timeCounter,
-            point.totalDrawingTime,
-            point.averageSpeed
-        ].join(",");
-        csvContent += row + "\n";
-    });
-
-    // Creating a downloadable link
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", filename);
-    document.body.appendChild(link);
-    
-    link.click();
-    document.body.removeChild(link);
 }
 
 function saveDataLocally(numTouches, totalDrawingTime, averageSpeed) {
@@ -213,6 +174,19 @@ function saveDataLocally(numTouches, totalDrawingTime, averageSpeed) {
     console.log('Stroke history from canvas with parameters:', touchDataArrayWithParameters);
     console.log('Number of touches:', numTouches, currentPageName, user);
 
-    // Saving the data as a CSV file
-    downloadCSV(touchDataArrayWithParameters, `touch_data_${formattedTimestamp}.csv`);
+    // Send the data to the server for saving
+    fetch('http://localhost:3000/save-csv', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(touchDataArrayWithParameters),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Data saved:', data);
+    })
+    .catch(error => {
+        console.error('Error saving data:', error);
+    });
 }
