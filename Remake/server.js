@@ -5,16 +5,17 @@ const path = require('path');
 const app = express();
 const PORT = 3000;
 
+// Middleware to parse JSON
 app.use(express.json());
 
-// ตั้งค่าเส้นทางของไฟล์ CSV
+// Path for the CSV file
 const csvFilePath = path.join('D:', 'Kra tae', 'IS', 'Data', 'touch_data.csv');
 
-// ตรวจสอบว่าไฟล์ CSV มี header หรือไม่ ถ้าไม่มีให้เขียน header ลงไป
+// Header for CSV file
 const csvHeader = "x,y,lineWidth,real_time,speed,acceleration,angle,currentPageName,lineCount,timestamp,user,distance,force,timeCounter,totalDrawingTime,averageSpeed\n";
 
+// Create the CSV file if it does not exist
 if (!fs.existsSync(csvFilePath)) {
-    // สร้างไฟล์พร้อมกับเขียน header
     fs.writeFileSync(csvFilePath, csvHeader, 'utf8', (err) => {
         if (err) {
             console.error('Error creating CSV file:', err);
@@ -25,7 +26,11 @@ if (!fs.existsSync(csvFilePath)) {
 app.post('/save-csv', (req, res) => {
     const touchDataArrayWithParameters = req.body;
 
-    // แปลงข้อมูลจาก array เป็นรูปแบบของ CSV row
+    if (!Array.isArray(touchDataArrayWithParameters) || touchDataArrayWithParameters.length === 0) {
+        return res.status(400).json({ message: 'Invalid data format' });
+    }
+
+    // Convert data to CSV rows
     const csvRows = touchDataArrayWithParameters.map(point => [
         point.x,
         point.y,
@@ -45,14 +50,13 @@ app.post('/save-csv', (req, res) => {
         point.averageSpeed
     ].join(",")).join("\n");
 
-    // เขียนข้อมูลเพิ่มเติมลงในไฟล์ CSV
+    // Append data to the CSV file
     fs.appendFile(csvFilePath, csvRows + "\n", 'utf8', (err) => {
         if (err) {
             console.error('Error writing to CSV file:', err);
             return res.status(500).json({ message: 'Failed to save data' });
         }
 
-        // ตอบกลับเพื่อยืนยันการบันทึกข้อมูลสำเร็จ
         res.status(200).json({ message: 'Data saved successfully' });
     });
 });
