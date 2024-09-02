@@ -49,19 +49,31 @@ const touchevSchema = new mongoose.Schema(
 const Touchev = mongoose.model('Touchev', touchevSchema, 'information');
 
 // Middleware to log incoming data for debugging purposes
-app.use('/api/pencil', (req, res, next) => {
-  console.log('Received data:', req.body);
-  next();
-});
+// app.use('/api/pencil', (req, res, next) => {
+//   console.log('Received data:', req.body);
+//   next();
+// });
 
 // Function to convert JSON to CSV format
 function convertToCSV(jsonData) {
-  const headers = Object.keys(jsonData[0]);
-  const csvRows = [headers.join(',')]; // Join headers with commas
+  if (jsonData.length === 0) return '';
+
+  // Get all unique headers from the JSON data
+  const headers = new Set();
+  jsonData.forEach(row => Object.keys(row).forEach(key => headers.add(key)));
+  const headerArray = Array.from(headers);
+
+  const csvRows = [headerArray.join(',')]; // Join headers with commas
 
   for (const row of jsonData) {
-    const values = headers.map(header => {
-      const escaped = ('' + row[header]).replace(/"/g, '""'); // Escape quotes
+    const values = headerArray.map(header => {
+      const value = row[header];
+      // Handle null or undefined values
+      if (value === null || value === undefined) {
+        return '""';
+      }
+      // Escape quotes and handle special characters
+      const escaped = ('' + value).replace(/"/g, '""').replace(/\n/g, '\\n').replace(/,/g, '\\,');
       return `"${escaped}"`; // Wrap values in quotes
     });
     csvRows.push(values.join(',')); // Join values with commas
@@ -69,6 +81,8 @@ function convertToCSV(jsonData) {
 
   return csvRows.join('\n'); // Join rows with new lines
 }
+
+
 
 // API endpoint to handle incoming pencil data
 app.post('/api/pencil', async (req, res) => {
@@ -84,9 +98,12 @@ app.post('/api/pencil', async (req, res) => {
   const currentDate = new Date();
   const formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
   const formattedTime = `${String(currentDate.getHours()).padStart(2, '0')}-${String(currentDate.getMinutes()).padStart(2, '0')}-${String(currentDate.getSeconds()).padStart(2, '0')}`;
-
+  console.log('Received data:', touchDataArray);
+  
   // Convert the JSON data to CSV format
   const csvData = convertToCSV(touchDataArray);
+  console.log('csv data:', csvData);
+
 
   // Create the file name with the date and time
   const fileName = `D:/Kra tae/IS/Data/touch_data_${formattedDate}_${formattedTime}.csv`;
