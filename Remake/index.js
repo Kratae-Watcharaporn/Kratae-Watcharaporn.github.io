@@ -158,9 +158,6 @@ function sendDataToServer(numTouches) {
 
   const touchDataArrayWithParameters = strokeHistory.flat().map(point => ({
     ...point,
-    // rotationAngle,
-    // altitudeAngle,
-    // azimuthAngle,
     currentPageName,
     lineCount,
     timestamp: formattedTimestamp,
@@ -168,16 +165,14 @@ function sendDataToServer(numTouches) {
     distance,
     force: pressure,
     timeCounter: timeCounter++,
-
-    // ส่งค่าที่คำนวณเพิ่มไปยังเซิร์ฟเวอร์
     speed: point.speed,
     acceleration: point.acceleration,
     angle: point.angle,
   }));
-
-  console.log('Stroke history from canvas with parameters:', touchDataArrayWithParameters);
-  console.log('Number of touches:', numTouches, currentPageName, user);
-
+  
+  // Log data for verification before sending it to the server
+  console.log('Data to be sent to the server:', touchDataArrayWithParameters);
+  
   fetch('https://k0c9lchx-3000.asse.devtunnels.ms/api/pencil', {
     method: 'POST',
     mode: 'cors',
@@ -186,11 +181,11 @@ function sendDataToServer(numTouches) {
     },
     body: JSON.stringify(touchDataArrayWithParameters),
   })
-    .then((response) => {
-      console.log('Data sent to the server');
-      timeCounter = 0;
-    })
-    .catch((error) => {
-      console.error('Error sending data to the server:', error);
-    });
+  .then((response) => {
+    console.log('Data sent to the server successfully');
+  })
+  .catch((error) => {
+    console.error('Error sending data to the server:', error);
+  });
+  
 }
