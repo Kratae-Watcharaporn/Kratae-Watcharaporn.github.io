@@ -84,7 +84,7 @@ app.post('/api/pencil', async (req, res) => {
     const csvData = convertToCSV(touchDataArray);
 
     // Save the CSV data to a file
-    fs.appendFile("D:/Kra tae/IS/Data/touch_data.csv", csvData + '\n', (err) => {
+    fs.appendFile('touch_data.csv', csvData + '\n', (err) => {
       if (err) {
         console.error('Error saving CSV file:', err);
         return res.status(500).json({ error: 'Failed to save CSV file' });
