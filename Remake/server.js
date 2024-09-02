@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const fs = require('fs');
 const app = express();
 
 // Middleware to enable CORS
@@ -18,6 +19,7 @@ mongoose.connect(
     bufferCommands: false, // Disable buffering
   }
 );
+
 
 // Define the schema and model for the Touchev collection
 const touchevSchema = new mongoose.Schema(
