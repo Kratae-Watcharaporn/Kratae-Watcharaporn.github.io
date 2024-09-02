@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const fs = require('fs');
 const app = express();
 
 // Middleware to enable CORS
@@ -26,9 +27,6 @@ const touchevSchema = new mongoose.Schema(
     y: Number,
     lineWidth: Number,
     real_time: String,
-    // rotationAngle: Number,
-    // altitudeAngle: Number,
-    // azimuthAngle: Number,
     currentPageName: String,
     lineCount: Number,
     timestamp: String,
@@ -39,7 +37,6 @@ const touchevSchema = new mongoose.Schema(
     speed: Number,        // Add speed property
     acceleration: Number, // Add acceleration property
     angle: Number         // Add angle property
-    
   },
   { collection: 'information' }
 );
@@ -52,6 +49,22 @@ app.use('/api/pencil', (req, res, next) => {
   next();
 });
 
+// Function to convert JSON to CSV format
+function convertToCSV(jsonData) {
+  const headers = Object.keys(jsonData[0]);
+  const csvRows = [headers.join(',')]; // Join headers with commas
+
+  for (const row of jsonData) {
+    const values = headers.map(header => {
+      const escaped = ('' + row[header]).replace(/"/g, '""'); // Escape quotes
+      return `"${escaped}"`; // Wrap values in quotes
+    });
+    csvRows.push(values.join(',')); // Join values with commas
+  }
+
+  return csvRows.join('\n'); // Join rows with new lines
+}
+
 // API endpoint to handle incoming pencil data
 app.post('/api/pencil', async (req, res) => {
   const touchDataArray = req.body;
@@ -61,6 +74,18 @@ app.post('/api/pencil', async (req, res) => {
     if (touchDataArray.length === 0) {
       return res.status(400).json({ error: 'No touch data to save' });
     }
+
+    // Convert the JSON data to CSV format
+    const csvData = convertToCSV(touchDataArray);
+
+    // Save the CSV data to a file
+    fs.appendFile('D:\Kra tae\IS\Data\touch_data.csv', csvData + '\n', (err) => {
+      if (err) {
+        console.error('Error saving CSV file:', err);
+        return res.status(500).json({ error: 'Failed to save CSV file' });
+      }
+      console.log('CSV file saved successfully.');
+    });
 
     // Save data to MongoDB
     await Touchev.insertMany(touchDataArray);
