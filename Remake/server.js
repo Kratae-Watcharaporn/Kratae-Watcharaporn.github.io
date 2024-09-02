@@ -39,6 +39,7 @@ const touchevSchema = new mongoose.Schema(
     speed: Number,        // Add speed property
     acceleration: Number, // Add acceleration property
     angle: Number         // Add angle property
+    
   },
   { collection: 'information' }
 );
