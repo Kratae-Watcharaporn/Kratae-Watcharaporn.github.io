@@ -4,9 +4,9 @@ const fabricCanvas = new fabric.Canvas('canvas', { isDrawingMode: false });
 const currentPageName = window.location.pathname.split('/').pop();
 fabricCanvas.setBackgroundImage('', fabricCanvas.renderAll.bind(fabricCanvas));
 let lineCount = 1;
-// let rotationAngle = 0;
-// let altitudeAngle = 0;
-// let azimuthAngle = 0;
+let rotationAngle = 0;
+let altitudeAngle = 0;
+let azimuthAngle = 0;
 var user = localStorage.getItem('username');
 localStorage.setItem('beforeX', 0);
 localStorage.setItem('beforeY', 0);
@@ -31,26 +31,18 @@ fabricCanvas.freeDrawingBrush.width = 7;
 fabricCanvas.isDrawingMode = !fabricCanvas.isDrawingMode;
 const currentPageURL = window.location.href;
 
-// Function to calculate Euclidean distance
 function euclidean_distance(x1, y1, x2, y2) {
   const squared_distance = (x2 - x1) ** 2 + (y2 - y1) ** 2;
-  return Math.sqrt(squared_distance);
+  const distance = Math.sqrt(squared_distance);
+  return distance;
 }
 
-// Function to calculate speed
-function calculate_speed(prevX, prevY, currentX, currentY, timeElapsed) {
-  const distance = euclidean_distance(prevX, prevY, currentX, currentY);
-  return distance / timeElapsed; // Speed = Distance / Time
-}
-
-// Function to calculate acceleration
-function calculate_acceleration(prevSpeed, currentSpeed, timeElapsed) {
-  return (currentSpeed - prevSpeed) / timeElapsed; // Acceleration = Change in Speed / Time
-}
-
-// Function to calculate angle
-function calculate_angle(prevX, prevY, currentX, currentY) {
-  return Math.atan2(currentY - prevY, currentX - prevX) * (180 / Math.PI); // Angle in degrees
+function drawOnCanvas(points) {
+  for (let i = 1; i < points.length; i++) {
+    const startPoint = points[i - 1];
+    const endPoint = points[i];
+    drawLine(startPoint, endPoint);
+  }
 }
 
 fabricCanvas.on('mouse:down', function (e) {
@@ -61,8 +53,6 @@ fabricCanvas.on('mouse:down', function (e) {
   localStorage.setItem('beforeY', localStorage.getItem('currentY'));
   localStorage.setItem('currentX', e.e.pageX * 2);
   localStorage.setItem('currentY', e.e.pageY * 2);
-
-  timeCounter = new Date().getTime(); // Record time when mouse is pressed down
 });
 
 for (const ev of ['pointermove', 'mousemove']) {
@@ -74,26 +64,26 @@ for (const ev of ['pointermove', 'mousemove']) {
     let x = e.pageX * 2;
     let y = e.pageY * 2;
     
+    // Get the real time with milliseconds
     let now = new Date();
     let real_time = now.toLocaleTimeString() + ':' + now.getMilliseconds();
+    
+    // Log the real time to the console
+    console.log('Real Time:', real_time);
 
-    let timeElapsed = (new Date().getTime() - timeCounter) / 1000; // Time elapsed in seconds
-    const prevX = localStorage.getItem('beforeX');
-    const prevY = localStorage.getItem('beforeY');
-    const currentSpeed = calculate_speed(prevX, prevY, x, y, timeElapsed); // Calculate current speed
-    const prevSpeed = points.length > 1 ? points[points.length - 2].speed : 0;
-    const acceleration = calculate_acceleration(prevSpeed, currentSpeed, timeElapsed); // Calculate acceleration
-    const angle = calculate_angle(prevX, prevY, x, y); // Calculate angle
-
+    // Calculate line width based on pressure
     lineWidth = Math.log(pressure + 1) * 40 * 0.2 + lineWidth * 0.8;
 
-    points.push({ x, y, lineWidth, real_time, speed: currentSpeed, acceleration, angle });
+    // Push the current data including real_time into the points array
+    points.push({ x, y, lineWidth, real_time });
 
+    // Call a function to draw the collected points on the canvas
     drawOnCanvas(points);
 
+    // Use requestIdleCallback to update additional pointer data and force
     requestIdleCallback(() => {
       $force.textContent = 'force = ' + pressure;
-           
+      
       if (e.pointerType === 'pen') {
         rotationAngle = e.rotationAngle || 0;
         altitudeAngle = e.altitudeAngle || 0;
@@ -102,10 +92,10 @@ for (const ev of ['pointermove', 'mousemove']) {
         console.log('Pointer parameters:', { rotationAngle, altitudeAngle, azimuthAngle });
       }
     });
-
-    timeCounter = new Date().getTime(); // Update time after pointer move
   });
 }
+
+
 
 fabricCanvas.on('mouse:up', function (e) {
   isMousedown = false;
@@ -132,14 +122,6 @@ function drawLine(start, end) {
   fabricCanvas.getContext().closePath();
 }
 
-function drawOnCanvas(points) {
-  for (let i = 1; i < points.length; i++) {
-    const startPoint = points[i - 1];
-    const endPoint = points[i];
-    drawLine(startPoint, endPoint);
-  }
-}
-
 function resetStrokeHistory() {
   strokeHistory.splice(0, strokeHistory.length);
 }
@@ -158,6 +140,9 @@ function sendDataToServer(numTouches) {
 
   const touchDataArrayWithParameters = strokeHistory.flat().map(point => ({
     ...point,
+    rotationAngle,
+    altitudeAngle,
+    azimuthAngle,
     currentPageName,
     lineCount,
     timestamp: formattedTimestamp,
@@ -165,14 +150,11 @@ function sendDataToServer(numTouches) {
     distance,
     force: pressure,
     timeCounter: timeCounter++,
-    speed: point.speed,
-    acceleration: point.acceleration,
-    angle: point.angle,
   }));
-  
-  // Log data for verification before sending it to the server
-  console.log('Data to be sent to the server:', touchDataArrayWithParameters);
-  
+
+  console.log('Stroke history from canvas with parameters:', touchDataArrayWithParameters);
+  console.log('Number of touches:', numTouches, currentPageName, user);
+
   fetch('https://k0c9lchx-3000.asse.devtunnels.ms/api/pencil', {
     method: 'POST',
     mode: 'cors',
@@ -181,11 +163,11 @@ function sendDataToServer(numTouches) {
     },
     body: JSON.stringify(touchDataArrayWithParameters),
   })
-  .then((response) => {
-    console.log('Data sent to the server successfully');
-  })
-  .catch((error) => {
-    console.error('Error sending data to the server:', error);
-  });
-  
+    .then((response) => {
+      console.log('Data sent to the server');
+      timeCounter = 0;
+    })
+    .catch((error) => {
+      console.error('Error sending data to the server:', error);
+    });
 }

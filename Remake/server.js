@@ -17,6 +17,7 @@ const touchevSchema = new mongoose.Schema(
     x: Number,
     y: Number,
     lineWidth: Number,
+    real_time: String,
     rotationAngle: Number,
     altitudeAngle: Number,
     azimuthAngle: Number,
