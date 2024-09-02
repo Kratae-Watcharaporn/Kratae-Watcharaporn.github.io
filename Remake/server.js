@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const fs = require('fs');
 const app = express();
 
 // Middleware to enable CORS
@@ -27,6 +26,9 @@ const touchevSchema = new mongoose.Schema(
     y: Number,
     lineWidth: Number,
     real_time: String,
+    // rotationAngle: Number,
+    // altitudeAngle: Number,
+    // azimuthAngle: Number,
     currentPageName: String,
     lineCount: Number,
     timestamp: String,
@@ -37,6 +39,7 @@ const touchevSchema = new mongoose.Schema(
     speed: Number,        // Add speed property
     acceleration: Number, // Add acceleration property
     angle: Number         // Add angle property
+    
   },
   { collection: 'information' }
 );
@@ -79,7 +82,7 @@ app.post('/api/pencil', async (req, res) => {
     const csvData = convertToCSV(touchDataArray);
 
     // Save the CSV data to a file
-    fs.appendFile('D:/Kra tae/IS/Data/touch_data.csv', csvData + '\n', (err) => {
+    fs.appendFile("D:/Kra tae/IS/Data/touch_data.csv", csvData + '\n', (err) => {
       if (err) {
         console.error('Error saving CSV file:', err);
         return res.status(500).json({ error: 'Failed to save CSV file' });
