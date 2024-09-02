@@ -80,25 +80,25 @@ app.post('/api/pencil', async (req, res) => {
       return res.status(400).json({ error: 'No touch data to save' });
     }
 
-    // Get the current date
-    const currentDate = new Date();
-    const formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+    // Get the current date and time
+  const currentDate = new Date();
+  const formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+  const formattedTime = `${String(currentDate.getHours()).padStart(2, '0')}-${String(currentDate.getMinutes()).padStart(2, '0')}-${String(currentDate.getSeconds()).padStart(2, '0')}`;
 
-    // Convert the JSON data to CSV format
-    const csvData = convertToCSV(touchDataArray);
+  // Convert the JSON data to CSV format
+  const csvData = convertToCSV(touchDataArray);
 
-    // Create the file name with the date
-    const fileName = `D:/Kra tae/IS/Data/touch_data_${formattedDate}.csv`;
+  // Create the file name with the date and time
+  const fileName = `D:/Kra tae/IS/Data/touch_data_${formattedDate}_${formattedTime}.csv`;
 
-    // Save the CSV data to a file
-    fs.appendFile(fileName, csvData + '\n', (err) => {
+  // Save the CSV data to a file
+  fs.appendFile(fileName, csvData + '\n', (err) => {
     if (err) {
       console.error('Error saving CSV file:', err);
       return res.status(500).json({ error: 'Failed to save CSV file' });
     }
     console.log('CSV file saved successfully.');
 });
-
 
     // Save data to MongoDB
     await Touchev.insertMany(touchDataArray);
