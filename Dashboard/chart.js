@@ -26,7 +26,7 @@ const maxTimeCounterArray = [];
 const maxTimeCounterByPage = {}
 // Define page URLs and corresponding indices
 const pageIndices = {
-  'ipad_pro_11____3.html': 1,
+  'Page_1.html': 1,
   'ipad_pro_11____4.html': 2,
   'ipad_pro_11____7.html': 3,
   'ipad_pro_11____8.html': 4,
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       </h4>`;
     }
 
-      if (page === 'ipad_pro_11____3.html') {
+      if (page === 'Page_1.html') {
         const xValueRanges = [[699, 709], [2345, 2360]];
         const { firstValueInRange: xFirstValueInRange, lastValueInRange: xLastValueInRange } = checkValuesInRange(xData, ...xValueRanges);
         const yValueRanges = [[1117, 1127], [1117, 1127]];

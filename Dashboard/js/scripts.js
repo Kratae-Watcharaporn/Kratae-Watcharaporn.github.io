@@ -38,7 +38,7 @@ $(document).ready(function () {
 
   // Define the mapping of page names to display names
   const displayNameMap = {
-    'ipad_pro_11____3.html': 'left_to_right',
+    'Page_1.html': 'left_to_right',
     'ipad_pro_11____4.html': 'right_to_left',
     'ipad_pro_11____7.html': 'top_to_bottom',
     'ipad_pro_11____8.html': 'bottom_to_top',
