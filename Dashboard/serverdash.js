@@ -58,7 +58,7 @@ app.get('/scatterdata', async (req, res) => {
   
   // Mapping between user-friendly page names and actual page names
   const pageNameMap = {
-    'left_to_right': 'ipad_pro_11____3.html',
+    'left_to_right': 'Page_1.html',
     'right_to_left': 'ipad_pro_11____4.html',
     'top_to_bottom': 'ipad_pro_11____7.html',
     'bottom_to_top': 'ipad_pro_11____8.html',
@@ -72,7 +72,7 @@ app.get('/scatterdata', async (req, res) => {
     console.log(`Fetched data for user: ${user}`);
   
     const pageData = {
-      'ipad_pro_11____3.html': { force: [], timeCounter: [], distance: [], x: [], y: [] },
+      'Page_1.html': { force: [], timeCounter: [], distance: [], x: [], y: [] },
       'ipad_pro_11____4.html': { force: [], timeCounter: [], distance: [], x: [], y: [] },
       'ipad_pro_11____7.html': { force: [], timeCounter: [], distance: [], x: [], y: [] },
       'ipad_pro_11____8.html': { force: [], timeCounter: [], distance: [], x: [], y: [] },
