@@ -7,6 +7,10 @@ const app = express();
 // Middleware to enable CORS
 app.use(cors({ origin: '*' }));
 
+// Middleware to parse incoming JSON data with increased size limit
+app.use(express.json({ limit: '50mb' }));  // เพิ่มขนาด limit เป็น 50MB
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
 // Middleware to parse incoming JSON data
 app.use(express.json());
 

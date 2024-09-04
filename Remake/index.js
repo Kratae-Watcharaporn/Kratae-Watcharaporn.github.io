@@ -158,9 +158,9 @@ function sendDataToServer(numTouches) {
 
   const touchDataArrayWithParameters = strokeHistory.flat().map(point => ({
     ...point,
-    rotationAngle,
-    altitudeAngle,
-    azimuthAngle,
+    // rotationAngle,
+    // altitudeAngle,
+    // azimuthAngle,
     currentPageName,
     lineCount,
     timestamp: formattedTimestamp,
