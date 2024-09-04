@@ -39,12 +39,12 @@ $(document).ready(function () {
   // Define the mapping of page names to display names
   const displayNameMap = {
     'Page_1.html': 'left_to_right',
-    'ipad_pro_11____4.html': 'right_to_left',
-    'ipad_pro_11____7.html': 'top_to_bottom',
-    'ipad_pro_11____8.html': 'bottom_to_top',
-    'ipad_pro_11____11.html': 'lefttop_to_bottomright',
-    'ipad_pro_11____12.html': 'rightbottom_to_lefttop',
-    'ipad_pro_11____15.html': 'curve'
+    'Page_2.html': 'right_to_left',
+    'Page_3.html': 'top_to_bottom',
+    'Page_4.html': 'bottom_to_top',
+    'Page_5.html': 'lefttop_to_bottomright',
+    'Page_6.html': 'rightbottom_to_lefttop',
+    'Page_7.html': 'curve'
   };
 
   // Handle button click to update URL

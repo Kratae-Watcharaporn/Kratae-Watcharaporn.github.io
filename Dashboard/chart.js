@@ -2,12 +2,12 @@
 // Mapping between user-friendly page names and actual page names
 const pageNameMap = {
   'left_to_right': 'Page_1.html',
-  'right_to_left': 'ipad_pro_11____4.html',
-  'top_to_bottom': 'ipad_pro_11____7.html',
-  'bottom_to_top': 'ipad_pro_11____8.html',
-  'lefttop_to_bottomright': 'ipad_pro_11____11.html',
-  'rightbottom_to_lefttop': 'ipad_pro_11____12.html',
-  'curve': 'ipad_pro_11____15.html'
+  'right_to_left': 'Page_2.html',
+  'top_to_bottom': 'Page_3.html',
+  'bottom_to_top': 'Page_4.html',
+  'lefttop_to_bottomright': 'Page_5.html',
+  'rightbottom_to_lefttop': 'Page_6.html',
+  'curve': 'Page_7.html'
 };
 
 let i = 0;
@@ -27,12 +27,12 @@ const maxTimeCounterByPage = {}
 // Define page URLs and corresponding indices
 const pageIndices = {
   'Page_1.html': 1,
-  'ipad_pro_11____4.html': 2,
-  'ipad_pro_11____7.html': 3,
-  'ipad_pro_11____8.html': 4,
-  'ipad_pro_11____11.html': 5,
-  'ipad_pro_11____12.html': 6,
-  'ipad_pro_11____15.html': 7,
+  'Page_2.html': 2,
+  'Page_3.html': 3,
+  'Page_4.html': 4,
+  'Page_5.html': 5,
+  'Page_6.html': 6,
+  'Page_7.html': 7,
 };
 
 document.addEventListener('DOMContentLoaded', async function () {
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           </h4>`;
         }
       }
-      else if (page === 'ipad_pro_11____4.html') {
+      else if (page === 'Page_2.html') {
         const xValueRanges = [[2313, 2323], [667, 677]];
         const { firstValueInRange: xFirstValueInRange, lastValueInRange: xLastValueInRange } = checkValuesInRange(xData, ...xValueRanges);
         const yValueRanges = [[1117, 1127], [1117, 1127]];
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           </h4>`;
         }
       }
-      else if (page === 'ipad_pro_11____7.html') {
+      else if (page === 'Page_3.html') {
         const xValueRanges = [[895, 905], [2069, 2079]];
         const { firstValueInRange: xFirstValueInRange, lastValueInRange: xLastValueInRange } = checkValuesInRange(xData, ...xValueRanges);
         const yValueRanges = [[1271, 1281], [957, 967]];
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           </h4>`;
         }
       }
-      else if (page === 'ipad_pro_11____8.html') {
+      else if (page === 'Page_4.html') {
         const xValueRanges = [[895, 905], [2069, 2079]];
         const { firstValueInRange: xFirstValueInRange, lastValueInRange: xLastValueInRange } = checkValuesInRange(xData, ...xValueRanges);
         const yValueRanges = [[959, 969], [1269, 1279]];
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           </h4>`;
         }
       }
-      else if (page === 'ipad_pro_11____11.html') {
+      else if (page === 'Page_5.html') {
         const xValueRanges = [[835, 840], [2121, 2131]];
         const { firstValueInRange: xFirstValueInRange, lastValueInRange: xLastValueInRange } = checkValuesInRange(xData, ...xValueRanges);
         const yValueRanges = [[965, 975], [1225, 1235]];
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           </h4>`;
         }
       }
-      else if (page === 'ipad_pro_11____12.html') {
+      else if (page === 'Page_6.html') {
         const xValueRanges = [[1073, 1083], [1879, 1889]];
         const { firstValueInRange: xFirstValueInRange, lastValueInRange: xLastValueInRange } = checkValuesInRange(xData, ...xValueRanges);
         const yValueRanges = [[1225, 125], [961, 971]];
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           </h4>`;
         }
       }
-      else if (page === 'ipad_pro_11____15.html') {
+      else if (page === 'Page_7.html') {
         const xValueRanges = [[713, 723], [2347, 2357]];
         const { firstValueInRange: xFirstValueInRange, lastValueInRange: xLastValueInRange } = checkValuesInRange(xData, ...xValueRanges);
         const yValueRanges = [[1187, 1197], [1995, 1205]];

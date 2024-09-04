@@ -59,12 +59,12 @@ app.get('/scatterdata', async (req, res) => {
   // Mapping between user-friendly page names and actual page names
   const pageNameMap = {
     'left_to_right': 'Page_1.html',
-    'right_to_left': 'ipad_pro_11____4.html',
-    'top_to_bottom': 'ipad_pro_11____7.html',
-    'bottom_to_top': 'ipad_pro_11____8.html',
-    'lefttop_to_bottomright': 'ipad_pro_11____11.html',
-    'rightbottom_to_lefttop': 'ipad_pro_11____12.html',
-    'curve': 'ipad_pro_11____15.html'
+    'right_to_left': 'Page_2.html',
+    'top_to_bottom': 'Page_3.html',
+    'bottom_to_top': 'Page_4.html',
+    'lefttop_to_bottomright': 'Page_5.html',
+    'rightbottom_to_lefttop': 'Page_6.html',
+    'curve': 'Page_7.html'
   };
 
   try {
@@ -73,12 +73,12 @@ app.get('/scatterdata', async (req, res) => {
   
     const pageData = {
       'Page_1.html': { force: [], timeCounter: [], distance: [], x: [], y: [] },
-      'ipad_pro_11____4.html': { force: [], timeCounter: [], distance: [], x: [], y: [] },
-      'ipad_pro_11____7.html': { force: [], timeCounter: [], distance: [], x: [], y: [] },
-      'ipad_pro_11____8.html': { force: [], timeCounter: [], distance: [], x: [], y: [] },
-      'ipad_pro_11____11.html': { force: [], timeCounter: [], distance: [], x: [], y: [] },
-      'ipad_pro_11____12.html': { force: [], timeCounter: [], distance: [], x: [], y: [] },
-      'ipad_pro_11____15.html': { force: [], timeCounter: [], distance: [], x: [], y: [] }
+      'Page_2.html': { force: [], timeCounter: [], distance: [], x: [], y: [] },
+      'Page_3.html': { force: [], timeCounter: [], distance: [], x: [], y: [] },
+      'Page_4.html': { force: [], timeCounter: [], distance: [], x: [], y: [] },
+      'Page_5.html': { force: [], timeCounter: [], distance: [], x: [], y: [] },
+      'Page_6.html': { force: [], timeCounter: [], distance: [], x: [], y: [] },
+      'Page_7.html': { force: [], timeCounter: [], distance: [], x: [], y: [] }
     };
   
     scatterData.forEach(entry => {
