@@ -32,7 +32,7 @@ async function populateDropdownOptions() {
 
     // Mapping of page names to user-friendly names
     const displayNameMap = {
-        'Page_1.html': 'left_to_right',
+        'ipad_pro_11____3.html': 'left_to_right',
         'ipad_pro_11____4.html': 'right_to_left',
         'ipad_pro_11____7.html': 'top_to_bottom',
         'ipad_pro_11____8.html': 'bottom_to_top',
