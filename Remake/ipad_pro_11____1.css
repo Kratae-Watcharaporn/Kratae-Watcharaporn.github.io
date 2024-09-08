@@ -246,16 +246,18 @@ body {
 
 /* Only edit this if you know what you are doing! */
 img {
-	position: absolute;
+	position: relative; /* เปลี่ยนจาก absolute เป็น relative */
 	display: block;
-	margin: 0px;
+	max-width: 100%; /* ปรับภาพให้ responsive */
+	height: auto;
+	margin: 0;
 	border: none;
-	padding: 0px;
+	padding: 0;
 }
 
 /* Only edit this if you know what you are doing! */
 div {
-	position: absolute;
+	position: relative; /* เปลี่ยนจาก absolute เป็น relative */
 }
 
 #content-container {
