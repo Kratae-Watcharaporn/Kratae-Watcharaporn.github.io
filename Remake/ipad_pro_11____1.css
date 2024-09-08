@@ -265,7 +265,7 @@ div {
 	position: relative;
 	width: 90vw; /* กำหนดให้กว้าง 90% ของหน้าจอ */
 	height: 80vh; /* กำหนดให้สูง 80% ของหน้าจอ */
-	overflow: hidden;
+	/* overflow: hidden; */
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
