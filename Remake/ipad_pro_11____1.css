@@ -262,6 +262,13 @@ div {
 	margin-right: auto;
 }
 
+@media only screen and (max-width: 768px) {
+    #content-container {
+        width: 100vw;
+        height: auto; /* ให้ความสูงปรับตามเนื้อหา */
+        padding: 10px; /* เพิ่ม padding เพื่อให้ไม่ชนขอบ */
+    }
+}
 
 #page_ipad_pro_11____1_ek1 {
 	top: 0px;
