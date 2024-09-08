@@ -1,14 +1,7 @@
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
-    canvas {
-        width: 100%;
-        height: 100%;
-    }
-}
-
-/* canvas {
+canvas {
 	position: absolute;
 	width: 100%;
-	height: 80%;
+	height: 100%;
 	left: 0;
 	bottom: 0;
 }
@@ -246,29 +239,27 @@ body {
 
 /* Only edit this if you know what you are doing! */
 img {
-	position: relative; /* เปลี่ยนจาก absolute เป็น relative */
+	position: absolute;
 	display: block;
-	max-width: 100%; /* ปรับภาพให้ responsive */
-	height: auto;
-	margin: 0;
+	margin: 0px;
 	border: none;
-	padding: 0;
+	padding: 0px;
 }
 
 /* Only edit this if you know what you are doing! */
 div {
-	position: relative; /* เปลี่ยนจาก absolute เป็น relative */
+	position: absolute;
 }
 
 #content-container {
 	display: block;
-    position: relative;
-    width: 90vw;
-    height: 80vh;
-    min-width: 320px; /* กำหนดค่าขั้นต่ำให้ container */
-    min-height: 480px;
-    margin-left: auto;
-    margin-right: auto;
+	position: relative;
+	width: 1194px;
+	height: 834px;
+	overflow: hidden;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 
@@ -557,14 +548,14 @@ div {
 	background-size: cover;
 }
 
-#page_Page_1_ek1 {
+#page_ipad_pro_11____3_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_1_ek2 {
+#_bg__ipad_pro_11____3_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -789,14 +780,14 @@ div {
 	background-size: cover;
 }
 
-#page_Page_2_ek1 {
+#page_ipad_pro_11____4_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_2_ek2 {
+#_bg__ipad_pro_11____4_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -1635,14 +1626,14 @@ div {
 	background-size: cover;
 }
 
-#page_Page_3_ek1 {
+#page_ipad_pro_11____7_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_3_ek2 {
+#_bg__ipad_pro_11____7_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -1878,14 +1869,14 @@ div {
 	background-size: cover;
 }
 
-#page_Page_4_ek1 {
+#page_ipad_pro_11____8_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_4_ek2 {
+#_bg__ipad_pro_11____8_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -2586,14 +2577,14 @@ div {
 	background-size: cover;
 }
 
-#page_Page_5_ek1 {
+#page_ipad_pro_11____11_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_5_ek2 {
+#_bg__ipad_pro_11____11_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -2818,14 +2809,14 @@ div {
 	background-size: cover;
 }
 
-#page_Page_6_ek1 {
+#page_ipad_pro_11____12_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_6_ek2 {
+#_bg__ipad_pro_11____12_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -3514,14 +3505,14 @@ div {
 	background-size: cover;
 }
 
-#page_Page_7_ek1 {
+#page_ipad_pro_11____15_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_7_ek2 {
+#_bg__ipad_pro_11____15_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -3604,8 +3595,8 @@ div {
 #image_20 {
 	top: 500px !important;
 	position: absolute !important;
-	left: 400px;
-	width: 412px;
+	left: 200px;
+	width: 823px;
 	height: 104px;
 	background: url(skins/image_20.png);
 	background-size: cover;
@@ -6750,14 +6741,14 @@ div {
 	color: #000000;
 }
 
-#page_Page_10_ek1 {
+#page_ipad_pro_11____30_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_10_ek2 {
+#_bg__ipad_pro_11____30_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -6972,14 +6963,14 @@ div {
 	color: #000000;
 }
 
-#page_Page_14_ek1 {
+#page_ipad_pro_11____34_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_14_ek2 {
+#_bg__ipad_pro_11____34_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -7193,14 +7184,14 @@ div {
 	background-size: cover;
 }
 
-#page_Page_15_ek1 {
+#page_ipad_pro_11____35_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_15_ek2 {
+#_bg__ipad_pro_11____35_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -7414,14 +7405,14 @@ div {
 	color: #000000;
 }
 
-#page_Page_25_ek1 {
+#page_ipad_pro_11____45_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_25_ek2 {
+#_bg__ipad_pro_11____45_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -7686,14 +7677,14 @@ div {
 	color: #FFB200;
 }
 
-#page_Page_13_ek1 {
+#page_ipad_pro_11____33_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_13_ek2 {
+#_bg__ipad_pro_11____33_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -7918,14 +7909,14 @@ div {
 	color: #000000;
 }
 
-#page_Page_12_ek1 {
+#page_ipad_pro_11____32_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_12_ek2 {
+#_bg__ipad_pro_11____32_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -8140,14 +8131,14 @@ div {
 	color: #000000;
 }
 
-#page_Page_11_ek1 {
+#page_ipad_pro_11____31_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_11_ek2 {
+#_bg__ipad_pro_11____31_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -8361,14 +8352,14 @@ div {
 	background-size: cover;
 }
 
-#page_Page_17_ek1 {
+#page_ipad_pro_11____37_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_17_ek2 {
+#_bg__ipad_pro_11____37_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -8478,14 +8469,14 @@ div {
 	background-size: cover;
 }
 
-#page_Page_19_ek1 {
+#page_ipad_pro_11____39_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_19_ek2 {
+#_bg__ipad_pro_11____39_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -8720,14 +8711,14 @@ div {
 	background-size: cover;
 }
 
-#page_Page_20_ek1 {
+#page_ipad_pro_11____40_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_20_ek2 {
+#_bg__ipad_pro_11____40_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -8952,14 +8943,14 @@ div {
 	background-size: cover;
 }
 
-#page_Page_21_ek1 {
+#page_ipad_pro_11____41_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_21_ek2 {
+#_bg__ipad_pro_11____41_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -9183,14 +9174,14 @@ div {
 	background-size: cover;
 }
 
-#page_Page_22_ek1 {
+#page_ipad_pro_11____42_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_22_ek2 {
+#_bg__ipad_pro_11____42_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -9417,14 +9408,14 @@ div {
 	background-size: cover;
 }
 
-#page_Page_23_ek1 {
+#page_ipad_pro_11____43_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_23_ek2 {
+#_bg__ipad_pro_11____43_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
@@ -9651,14 +9642,14 @@ div {
 	background-size: cover;
 }
 
-#page_Page_24_ek1 {
+#page_ipad_pro_11____44_ek1 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
 	height: 834px;
 }
 
-#_bg__Page_24_ek2 {
+#_bg__ipad_pro_11____44_ek2 {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
