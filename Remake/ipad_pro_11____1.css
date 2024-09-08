@@ -262,13 +262,13 @@ div {
 
 #content-container {
 	display: block;
-	position: relative;
-	width: 90vw; /* กำหนดให้กว้าง 90% ของหน้าจอ */
-	height: 80vh; /* กำหนดให้สูง 80% ของหน้าจอ */
-	/* overflow: hidden; */
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
+    position: relative;
+    width: 90vw;
+    height: 80vh;
+    min-width: 320px; /* กำหนดค่าขั้นต่ำให้ container */
+    min-height: 480px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 
