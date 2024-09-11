@@ -261,24 +261,17 @@ div {
 	margin-right: auto;
 } */
 #content-container {
-	display: block;
-	position: relative;
-	width: 1194px;
-	height: 834px;
-	overflow: hidden;
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-	scale: 90%;
+	/* display: block; */
+	/* position: relative; */
+	width: 894px;
+	height: 434px;
+	/* overflow: hidden; */
+	/* display: block; */
+	/* margin-left: auto;
+	margin-right: auto; */
 }
 
-@media only screen and (max-width: 768px) {
-    #content-container {
-        width: 80vw;
-        height: auto; /* ให้ความสูงปรับตามเนื้อหา */
-        padding: 10px; /* เพิ่ม padding เพื่อให้ไม่ชนขอบ */
-    }
-}
+
 
 #page_ipad_pro_11____1_ek1 {
 	top: 0px;
@@ -291,7 +284,7 @@ div {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
-	height: 834px;
+	height: 634px;
 	background: rgba(255, 178, 0, 1);
 }
 
