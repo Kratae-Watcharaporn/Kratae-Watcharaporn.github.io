@@ -251,12 +251,6 @@ div {
 	position: absolute;
 }
 
-#content-container {
-    width: 100vw; /* Full width of the viewport */
-    height: 100vh; /* Full height of the viewport */
-    overflow: hidden; /* Avoid content overflow */
-}
-
 /* #content-container {
 	display: block;
 	position: relative;
@@ -266,7 +260,22 @@ div {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-} */
+	margin-top: auto;
+	margin-bottom: auto;
+}  */
+
+#content-container {
+	/* display: block; */
+	position: relative;
+	width: 1180px;
+	height: 820px;
+	/* overflow: hidden; */
+	/* display: block; */
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: auto;
+	margin-bottom: auto;
+}
 
 #page_ipad_pro_11____1_ek1 {
 	top: 0px;
