@@ -261,17 +261,15 @@ div {
 	margin-right: auto;
 } */
 #content-container {
-	/* display: block; */
-	/* position: relative; */
-	width: 894px;
-	height: 434px;
-	/* overflow: hidden; */
-	/* display: block; */
-	/* margin-left: auto;
-	margin-right: auto; */
+	display: block;
+	position: relative;
+	width: 1194px;
+	height: 834px;
+	overflow: hidden;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
 }
-
-
 
 #page_ipad_pro_11____1_ek1 {
 	top: 0px;
@@ -284,7 +282,7 @@ div {
 	top: 0px;
 	left: 0px;
 	width: 1194px;
-	height: 634px;
+	height: 834px;
 	background: rgba(255, 178, 0, 1);
 }
 
