@@ -250,7 +250,16 @@ img {
 div {
 	position: absolute;
 }
-
+/* #content-container {
+	display: block;
+	position: relative;
+	width: 1194px;
+	height: 834px;
+	overflow: hidden;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+} */
 #content-container {
 	display: block;
 	position: relative;
@@ -260,11 +269,12 @@ div {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
+	scale: 90%;
 }
 
 @media only screen and (max-width: 768px) {
     #content-container {
-        width: 100vw;
+        width: 80vw;
         height: auto; /* ให้ความสูงปรับตามเนื้อหา */
         padding: 10px; /* เพิ่ม padding เพื่อให้ไม่ชนขอบ */
     }
