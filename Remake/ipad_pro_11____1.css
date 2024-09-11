@@ -266,15 +266,15 @@ div {
 
 #content-container {
 	/* display: block; */
+	width: 1180px !important;
+	height: 820px !important;
+	overflow: hidden;
 	position: relative;
-	width: 1180px;
-	height: 820px;
-	/* overflow: hidden; */
 	/* display: block; */
-	margin-left: auto;
+	/* margin-left: auto;
 	margin-right: auto;
 	margin-top: auto;
-	margin-bottom: auto;
+	margin-bottom: auto; */
 }
 
 #page_ipad_pro_11____1_ek1 {
